@@ -25,23 +25,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaleConsumer", "Consumer\Sa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestPassenger", "UnitTest\UnitTestPassenger\UnitTestPassenger.csproj", "{992253F7-DA48-46D0-ABC5-64166079B4CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestAircraft", "UnitTest\UnitTestAircraft\UnitTestAircraft.csproj", "{ABF403A1-C17F-46BC-9680-2265545E243F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestAircraft", "UnitTest\UnitTestAircraft\UnitTestAircraft.csproj", "{ABF403A1-C17F-46BC-9680-2265545E243F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestCompany", "UnitTest\UnitTestCompany\UnitTestCompany.csproj", "{F1BBE5F7-DE87-4A3E-AA75-2DA2FB24FCE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestFlight", "UnitTest\UnitTestFlight\UnitTestFlight.csproj", "{FB86A684-52A7-4C0C-9EFD-0045A5E47D6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestFlight", "UnitTest\UnitTestFlight\UnitTestFlight.csproj", "{FB86A684-52A7-4C0C-9EFD-0045A5E47D6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestSale", "UnitTest\UnitTestSale\UnitTestSale.csproj", "{B13B1B28-040F-4DB6-98FD-FA0E3AAFB296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestSale", "UnitTest\UnitTestSale\UnitTestSale.csproj", "{B13B1B28-040F-4DB6-98FD-FA0E3AAFB296}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aircraft", "Microservices\Aircraft\Aircraft.csproj", "{897A1276-01EF-4049-BA9A-961ED4E53CDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aircraft", "Microservices\Aircraft\Aircraft.csproj", "{897A1276-01EF-4049-BA9A-961ED4E53CDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Company", "Microservices\Company\Company.csproj", "{937A0681-722B-4A3A-8E0E-BEAFE2A03A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company", "Microservices\Company\Company.csproj", "{937A0681-722B-4A3A-8E0E-BEAFE2A03A2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flight", "Microservices\Flight\Flight.csproj", "{32C33426-BDD3-400A-99AA-0255409DB020}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flight", "Microservices\Flight\Flight.csproj", "{32C33426-BDD3-400A-99AA-0255409DB020}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Passenger", "Microservices\Passenger\Passenger.csproj", "{A9384AEB-E7CF-48E2-9A3F-3EA2A033484F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Passenger", "Microservices\Passenger\Passenger.csproj", "{A9384AEB-E7CF-48E2-9A3F-3EA2A033484F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sale", "Microservices\Sale\Sale.csproj", "{FB6BC498-8954-4D7B-B863-4579BFC03EF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sale", "Microservices\Sale\Sale.csproj", "{FB6BC498-8954-4D7B-B863-4579BFC03EF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirportAPI", "..\AirportAPI\AirportAPI\AirportAPI.csproj", "{2A58EC4C-29DD-4A03-8BED-942AE6DA305C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +111,10 @@ Global
 		{FB6BC498-8954-4D7B-B863-4579BFC03EF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB6BC498-8954-4D7B-B863-4579BFC03EF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB6BC498-8954-4D7B-B863-4579BFC03EF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A58EC4C-29DD-4A03-8BED-942AE6DA305C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A58EC4C-29DD-4A03-8BED-942AE6DA305C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A58EC4C-29DD-4A03-8BED-942AE6DA305C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A58EC4C-29DD-4A03-8BED-942AE6DA305C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -128,6 +134,7 @@ Global
 		{32C33426-BDD3-400A-99AA-0255409DB020} = {7B955B52-B508-4FBA-A5B3-1AF5236751F1}
 		{A9384AEB-E7CF-48E2-9A3F-3EA2A033484F} = {7B955B52-B508-4FBA-A5B3-1AF5236751F1}
 		{FB6BC498-8954-4D7B-B863-4579BFC03EF0} = {7B955B52-B508-4FBA-A5B3-1AF5236751F1}
+		{2A58EC4C-29DD-4A03-8BED-942AE6DA305C} = {7B955B52-B508-4FBA-A5B3-1AF5236751F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E2A1958F-AB7E-4DB5-B512-08983882DAEA}
