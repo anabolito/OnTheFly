@@ -33,15 +33,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestFlight", "UnitTest\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestSale", "UnitTest\UnitTestSale\UnitTestSale.csproj", "{B13B1B28-040F-4DB6-98FD-FA0E3AAFB296}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aircraft", "Microservices\Aircraft\Aircraft.csproj", "{897A1276-01EF-4049-BA9A-961ED4E53CDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AircraftAPI", "Microservices\Aircraft\AircraftAPI.csproj", "{897A1276-01EF-4049-BA9A-961ED4E53CDE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Company", "Microservices\Company\Company.csproj", "{937A0681-722B-4A3A-8E0E-BEAFE2A03A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompanyAPI", "Microservices\Company\CompanyAPI.csproj", "{937A0681-722B-4A3A-8E0E-BEAFE2A03A2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Flight", "Microservices\Flight\Flight.csproj", "{32C33426-BDD3-400A-99AA-0255409DB020}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightAPI", "Microservices\Flight\FlightAPI.csproj", "{32C33426-BDD3-400A-99AA-0255409DB020}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Passenger", "Microservices\Passenger\Passenger.csproj", "{A9384AEB-E7CF-48E2-9A3F-3EA2A033484F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PassengerAPI", "Microservices\Passenger\PassengerAPI.csproj", "{A9384AEB-E7CF-48E2-9A3F-3EA2A033484F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sale", "Microservices\Sale\Sale.csproj", "{FB6BC498-8954-4D7B-B863-4579BFC03EF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaleAPI", "Microservices\Sale\SaleAPI.csproj", "{FB6BC498-8954-4D7B-B863-4579BFC03EF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AirportAPI", "Microservices\Airport\AirportAPI.csproj", "{54F51B69-3919-4601-A2D4-F47245E704BB}"
 EndProject
