@@ -1,4 +1,4 @@
-﻿namespace Company.Utils
+﻿namespace CompanyAPI.Utils
 {
     public interface IDataBaseSettings
     {
