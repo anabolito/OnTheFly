@@ -22,39 +22,50 @@ namespace CompanyAPI.Controller
         public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
 
         [HttpGet("{cnpj}")]
-        public ActionResult<List<Flight>> GetCompany(string cnpj) => _companyRepository.GetCompany(cnpj);
+        public ActionResult<List<Company>> GetCompany(string cnpj) => _companyRepository.GetCompanyByCnpj(cnpj);
 
 
-        //[HttpPut("{cnpj}")]
-        //public  ActionResult<Company> PutCompany
-
-        [HttpPost]
-        public ActionResult<Company> PostCompany(Company company)
+        [HttpPut("{cnpj}")]
+        public ActionResult Put(string cnpj, Company company)
         {
-            if (_companyRepository.Company == null)
-            {
-                return Problem("Entity set 'AndreTurismoAppClientServiceContext.Client'  is null.");
-            }
+            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            if (company == null) return NotFound("Companhia aérea não encontrada");
+
+            companyAux.CNPJ = company.CNPJ;
+            companyAux.Name = company.Name;
+            companyAux.NameOpt = company.NameOpt;
+            companyAux.DtOpen = company.DtOpen;
+            companyAux.Status = company.Status;
+            companyAux.Address = company.Address;
+
+            return StatusCode(202);
         }
 
-        // DELETE: api/Clients/5
-        [HttpDelete("{id}")]
-        public async ActionResult<Company> DeleteCompany(int cnpj)
+
+        [HttpPost]
+        public ActionResult PostCompany(Company company)
         {
-            if (_companyRepository.Company == null)
-            {
-                return NotFound();
-            }
-            var company = await _companyRepository.Company.FindAsync(cnpj);
-            if (company == null)
-            {
-                return NotFound();
-            }
+            if (!CnpjValidation(company.CNPJ)) return BadRequest("CPF Inválido!");
 
-            _companyRepository.Company.Remove(company);
-            await _companyRepository.Company();
+            _companyRepository.CreateCompany(company);
+            return StatusCode(201);
+        }
 
-            return NoContent();
+        private bool CnpjValidation(string cNPJ)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public ActionResult Delete(string cnpj)
+        {
+            if (cnpj == null) return NotFound();
+            var address = _companyRepository.GetCompanyByCnpj(cnpj);
+
+            if (address == null) return NotFound();
+
+            _companyRepository.DeleteCompany(cnpj);
+            return Ok();
         }
     }
 }
