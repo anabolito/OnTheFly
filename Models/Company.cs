@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,8 @@ namespace Models
 {
     public class Company
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string CNPJ { get; set; }
         public string Name { get; set; }
         public string NameOpt { get; set; }

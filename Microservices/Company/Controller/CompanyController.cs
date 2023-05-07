@@ -50,58 +50,11 @@ namespace CompanyAPI.Controller
         [HttpPost]
         public ActionResult PostCompany(Company company)
         {
-            if (!CnpjValidation(company.CNPJ)) return BadRequest("CPF Inválido!");
 
             _companyRepository.CreateCompany(company);
             return StatusCode(201);
         }
 
-        private bool CnpjValidation(string cnpj)
-        {
-
-            cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
-
-            if (cnpj.Length != 14)
-                return false;
-
-            int[] multiplicadores1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-            int[] multiplicadores2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-
-            string tempCnpj = cnpj.Substring(0, 12);
-
-            int soma = 0;
-
-            for (int i = 0; i < 12; i++)
-                soma += int.Parse(tempCnpj[i].ToString()) * multiplicadores1[i];
-
-            int resto = (soma % 11);
-
-            if (resto < 2)
-                resto = 0;
-            else
-                resto = 11 - resto;
-
-            string digito = resto.ToString();
-
-            tempCnpj += digito;
-
-            soma = 0;
-
-            for (int i = 0; i < 13; i++)
-                soma += int.Parse(tempCnpj[i].ToString()) * multiplicadores2[i];
-
-            resto = (soma % 11);
-
-            if (resto < 2)
-                resto = 0;
-            else
-                resto = 11 - resto;
-
-            digito += resto.ToString();
-
-            return cnpj.EndsWith(digito);
-
-        }
 
 
         public ActionResult Delete(string cnpj)
