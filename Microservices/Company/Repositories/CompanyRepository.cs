@@ -1,4 +1,5 @@
-﻿using CompanyAPI.Utils;
+﻿using CompanyAPI.AddressService;
+using CompanyAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using MongoDB.Driver;
@@ -10,7 +11,7 @@ namespace CompanyAPI.Repositories
     {
         private readonly IMongoCollection<Company> _company;
 
-        public CompanyRepository(IDataBaseSettings settings)
+        public CompanyRepository(IDatabaseSettings settings)
         {
             var company = new MongoClient(settings.ConnectionString);
             var database = company.GetDatabase(settings.DataBaseName);
@@ -22,11 +23,22 @@ namespace CompanyAPI.Repositories
 
         public Company CreateCompany(Company company)
         {
-            if (!CnpjValidation(company.CNPJ))
-            {
-                Console.WriteLine("CNPJ Inválido!");
-                return BadRequestObjectResult company;
-            }            
+            //if (!CnpjValidation(company.CNPJ))
+            //{
+            //    //Console.WriteLine("CNPJ Inválido!");
+            //    //return NotFoundResult; 
+            //}            
+            //var dto = PostOfficeService.GetAddress(company.Address.ZipCode).Result;
+            //Address address = new()
+            //{
+            //    Street = dto.Street,
+            //    Number = int.Parse(dto.Number),
+            //    State = dto.State,
+            //    ZipCode = dto.ZipCode,
+            //    City = dto.City
+            //};
+            //company.Address = address;
+
             _company.InsertOne(company);
             return company;
         }

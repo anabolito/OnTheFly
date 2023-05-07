@@ -1,6 +1,6 @@
 ﻿namespace CompanyAPI.Utils
 {
-    public interface IDataBaseSettings
+    public interface IDatabaseSettings
     {
         string CompanyCollectionName { get; set; }
         string ConnectionString { get; set; }

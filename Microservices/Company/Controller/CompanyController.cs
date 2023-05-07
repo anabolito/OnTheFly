@@ -1,4 +1,5 @@
-﻿using CompanyAPI.Repositories;
+﻿using CompanyAPI.AddressService;
+using CompanyAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -12,16 +13,18 @@ namespace CompanyAPI.Controller
     public class CompanyController : ControllerBase
     {
         private readonly CompanyRepository _companyRepository;
+        private readonly PostOfficeService _postOfficeService;
 
-        public CompanyController(CompanyRepository companyRepository)
+        public CompanyController(CompanyRepository companyRepository, PostOfficeService postOfficeService)
         {
             _companyRepository = companyRepository;
+            _postOfficeService = postOfficeService;
         }
 
         [HttpGet]
         public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
 
-        [HttpGet]
+        [HttpGet("{cnpj}")]
         public ActionResult<Company> Get(string cnpj)
         {
             var company = _companyRepository.GetCompanyByCnpj(cnpj);
@@ -56,7 +59,7 @@ namespace CompanyAPI.Controller
         }
 
 
-
+        [HttpDelete]
         public ActionResult Delete(string cnpj)
         {
             if (cnpj == null) return NotFound();
