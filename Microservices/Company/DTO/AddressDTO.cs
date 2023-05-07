@@ -8,47 +8,47 @@ namespace CompanyAPI.DTO
         public int Id { get; set; }
 
 
-        [JsonPropertyName("pais")]
+        [JsonProperty("pais")]
         public string? Country { get; set; }
 
 
-        [JsonPropertyName("cep")]
+        [JsonProperty("cep")]
         public string ZipCode { get; set; }
 
 
-        [JsonPropertyName("bairro")]
+        [JsonProperty("bairro")]
         public string Neighborhood { get; set; }
 
 
-        [JsonPropertyName("localidade")]
+        [JsonProperty("localidade")]
         public string City { get; set; }
 
 
-        [JsonPropertyName("uf")]
+        [JsonProperty("uf")]
         public string State { get; set; }
 
 
-        [JsonPropertyName("logradouro")]
+        [JsonProperty("logradouro")]
         public string Street { get; set; }
 
 
-        [JsonPropertyName("gia")]
+        [JsonProperty("gia")]
         public string Number { get; set; }
 
 
-        [JsonPropertyName("complemento")]
+        [JsonProperty("complemento")]
         public string Complety { get; set; }
 
-        public AddressDTO(int id, string? street, string? complety, string? neighborhood, string? city, string? state, string? zipCode, string? number)
-        {
-            Id = id;
-            Street = street;
-            Complety = complety;
-            Neighborhood = neighborhood;
-            City = city;
-            State = state;
-            ZipCode = zipCode;
-            Number = number;
-        }
+        //public AddressDTO(int id, string? street, string? complety, string? neighborhood, string? city, string? state, string? zipCode, string? number)
+        //{
+        //    Id = id;
+        //    Street = street;
+        //    Complety = complety;
+        //    Neighborhood = neighborhood;
+        //    City = city;
+        //    State = state;
+        //    ZipCode = zipCode;
+        //    Number = number;
+        //}
     }
 }

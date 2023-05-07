@@ -54,8 +54,27 @@ namespace CompanyAPI.Controller
         public ActionResult PostCompany(Company company)
         {
 
-            _companyRepository.CreateCompany(company);
-            return StatusCode(201);
+            var dto = _postOfficeService.GetAddress(company.Address.ZipCode).Result;
+            Address address = new()
+            {
+                Street = dto.Street,
+                Number = int.Parse(dto.Number),
+                State = dto.State,
+                ZipCode = dto.ZipCode,
+                City = dto.City,
+            };
+            company.Address = address;
+
+            try
+            {
+                _companyRepository.CreateCompany(company);
+                return StatusCode(201);
+
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

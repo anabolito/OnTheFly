@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using MongoDB.Driver;
 using System.Net;
+using ZstdSharp;
 
 namespace CompanyAPI.Repositories
 {
@@ -21,25 +22,14 @@ namespace CompanyAPI.Repositories
         public List<Company> GetCompany() =>
             _company.Find(company => true).ToList();
 
+
         public Company CreateCompany(Company company)
         {
-            //if (!CnpjValidation(company.CNPJ))
-            //{
-            //    //Console.WriteLine("CNPJ Inválido!");
-            //    //return NotFoundResult; 
-            //}            
-            //var dto = PostOfficeService.GetAddress(company.Address.ZipCode).Result;
-            //Address address = new()
-            //{
-            //    Street = dto.Street,
-            //    Number = int.Parse(dto.Number),
-            //    State = dto.State,
-            //    ZipCode = dto.ZipCode,
-            //    City = dto.City
-            //};
-            //company.Address = address;
-
-            _company.InsertOne(company);
+            if (!CnpjValidation(company.CNPJ))
+            {
+                Console.WriteLine("CNPJ Inválido!");
+                throw new BadHttpRequestException("CNPJ Inválido!");
+            }
             return company;
         }
 
@@ -56,7 +46,7 @@ namespace CompanyAPI.Repositories
 
 
 
-        private bool CnpjValidation(string cnpj)
+        public bool CnpjValidation(string cnpj)
         {
 
             cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
