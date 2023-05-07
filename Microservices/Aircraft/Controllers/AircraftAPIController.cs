@@ -9,9 +9,9 @@ namespace AircraftAPI.Controllers
     [ApiController]
     public class AircraftAPIController : ControllerBase
     {
-        protected readonly AircraftAPIService _aircraftAPIService;
+        protected readonly AircraftAPIRepository _aircraftAPIService;
 
-        public AircraftAPIController(AircraftAPIService aircraftAPIService)
+        public AircraftAPIController(AircraftAPIRepository aircraftAPIService)
         {
             _aircraftAPIService = aircraftAPIService;
         }

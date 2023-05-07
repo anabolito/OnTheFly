@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<AircraftAPISettings>(builder.Configuration.GetSection("AircraftAPISettings"));
 builder.Services.AddSingleton<IAircraftAPISettings>(s => s.GetRequiredService<IOptions<AircraftAPISettings>>().Value);
-builder.Services.AddSingleton<AircraftAPIService>();
+builder.Services.AddSingleton<AircraftAPIRepository>();
 
 var app = builder.Build();
 

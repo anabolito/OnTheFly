@@ -4,11 +4,12 @@ using MongoDB.Driver;
 
 namespace AircraftAPI.Services
 {
-    public class AircraftAPIService
+    public class AircraftAPIRepository
     {
+
         private readonly IMongoCollection<Aircraft> _aircraft;
 
-        public AircraftAPIService(IAircraftAPISettings settings)
+        public AircraftAPIRepository(IAircraftAPISettings settings)
         {
             var aircraft = new MongoClient(settings.ConnectionString);
             var database = aircraft.GetDatabase(settings.DatabaseName);
@@ -25,5 +26,6 @@ namespace AircraftAPI.Services
             _aircraft.InsertOne(aircraft);
             return aircraft;
         }
+      
     }
 }
