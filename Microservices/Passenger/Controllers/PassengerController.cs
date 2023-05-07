@@ -24,12 +24,24 @@ namespace PassengerAPI.Controllers
         }
 
         // GET: api/<PassengerController>
-        [HttpGet("/Passengers")]
-        public ActionResult<List<Passenger>> Get() => _passengerService.Get();
+        [HttpGet("Passengers")]
+        public ActionResult<List<Passenger>> Get()
+        {
+            List<Passenger> allPassengers = new();
+            var normals =_passengerService.Get().ToList();
+            var restricts =_passengerService.GetRestrictedOnes().ToList();
+            var minors = _passengerService.GetUnderAgeOnes().ToList();
+
+            allPassengers.AddRange(normals);
+            allPassengers.AddRange(restricts);
+            allPassengers.AddRange(minors);
+
+            return allPassengers;
+        }
        
 
         // GET api/<PassengerController>/5
-        [HttpGet("{/CPF}")]
+        [HttpGet("{CPF}")]
         public ActionResult<Passenger> Get(string cpf)
         {
             var passenger = _passengerService.Get(cpf);
@@ -39,35 +51,36 @@ namespace PassengerAPI.Controllers
         }
 
         // POST api/<PassengerController>
-        [HttpPost("{/Create}")]
-        public ActionResult Post([FromBody] Passenger passenger, Address address)
+        [HttpPost]
+        public ActionResult Post( Passenger passenger)
         {
-            if(!validateCPF.ValidateDoc(passenger.CPF)) return BadRequest("CPF Inválido!");
-            var zip = address.ZipCode;
-            var number = address.Number;
-            var complement= address.Complement;
+            if(!ValidateDocument.ValidateCPF(passenger.CPF, passenger.CPF)) return BadRequest("CPF Inválido!");
+            
+            //var zip = address.ZipCode;
+            //var number = address.Number;
+            //var complement= address.Complement;
 
-            AddressDTO addressDTO = _postOffice.GetAddress(address.ZipCode).Result;
-            var completeAddress = new Address(addressDTO)
-            {
-                Street = addressDTO.Street,
-                Number = number,
-                Complement = complement,
-                Neighborhood = addressDTO.Neighborhood,
-                City = addressDTO.City,
-                State = addressDTO.State,
-                ZipCode = zip
-            };
+            //AddressDTO addressDTO = _postOffice.GetAddress(address.ZipCode).Result;
+            //var completeAddress = new Address(addressDTO)
+            //{
+            //    Street = addressDTO.Street,
+            //    Number = number,
+            //    Complement = complement,
+            //    Neighborhood = addressDTO.Neighborhood,
+            //    City = addressDTO.City,
+            //    State = addressDTO.State,
+            //    ZipCode = zip
+            //};
 
-            passenger.Address = new(addressDTO);
+            //passenger.Address = new(addressDTO);
 
             _passengerService.Create(passenger);
             return StatusCode(201);
         }
 
         // PUT api/<PassengerController>/5
-        [HttpPut("{/Update}")]
-        public ActionResult Put([FromBody] string cpf, PassengerDTO passengerDTO)
+        [HttpPut("{Update}")]
+        public ActionResult Put(string cpf, PassengerDTO passengerDTO)
         {
             var passenger = _passengerService.Get(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado");
@@ -81,12 +94,14 @@ namespace PassengerAPI.Controllers
             passenger.Status = passengerDTO.Status;
             passenger.Address = passengerDTO.Address;
 
+            _passengerService.Update(cpf, passenger);
+
             return StatusCode(202);
         }
 
 
         // DELETE api/<PassengerController>/5
-        [HttpDelete("{/CPF}")]
+        [HttpDelete("{DeleteCPF}")]
         public void Delete(string cpf)
         {
             _passengerService.Delete(cpf);

@@ -15,6 +15,7 @@ namespace PassengerAPI.Repositories
         {
             var passenger = new MongoClient(settings.ConnectionString);
             var database = passenger.GetDatabase(settings.DatabaseName);
+
             _passenger = database.GetCollection<Passenger>(settings.PassengerCollectionName);
             _unactivatedPassenger = database.GetCollection<Passenger>(settings.InactivePassengerCollectionName);
             _underAgePassenger = database.GetCollection<Passenger>(settings.UnderagePassengerCollectionName);
@@ -35,11 +36,30 @@ namespace PassengerAPI.Repositories
         }
         #endregion
         #region[R]
-        public List<Passenger> Get() =>
-            _passenger.Find(passenger => true).ToList();
+        public List<Passenger> Get()
+        {
+            var allPassengers = new List<Passenger>();
+            var normalPassengers = _passenger.Find(p => true).ToList();
+            var restrictedPassengers = _restrictedPassenger.Find(p => true).ToList();
+            var underAgePassengers = _underAgePassenger.Find(p => true).ToList();           
 
-        public Passenger Get(string cpf) =>
-            _passenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
+            return allPassengers;
+        }
+
+        public Passenger Get(string cpf)
+        { 
+            var normalPassenger = _passenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
+            var restrictedPassenger =_restrictedPassenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault(); 
+            var underAgePassenger =_underAgePassenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
+            var unactivatedPassenge = _unactivatedPassenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
+
+            if (normalPassenger != null) return normalPassenger;
+            else if (restrictedPassenger != null) return restrictedPassenger;
+            else if (underAgePassenger != null) return underAgePassenger;
+            else if (unactivatedPassenge != null) return unactivatedPassenge;
+            else return new Passenger();
+            
+        }
 
         public List<Passenger> GetUnderAgeOnes()
         {
@@ -63,6 +83,9 @@ namespace PassengerAPI.Repositories
         public Passenger Update(string cpf, Passenger passenger)
         {
             var currentPassenger = _passenger.Find(p => p.CPF == cpf).FirstOrDefault();
+            var minorPassenger = _underAgePassenger.Find(p => p.CPF == cpf).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find(p => p.CPF == cpf).FirstOrDefault();
+            var unactivatedPassenger = _unactivatedPassenger.Find(p => p.CPF == cpf).FirstOrDefault();
 
             if (currentPassenger != null)
             {
@@ -74,7 +97,7 @@ namespace PassengerAPI.Repositories
                     return new Passenger();
                 }
                 //To true
-                else if((bool)passenger.Status && (bool)!currentPassenger.Status)
+                else if((bool)passenger.Status && (bool)!restrictedPassenger.Status)
                 {
                     _passenger.InsertOne(passenger);
                     _restrictedPassenger.DeleteOne(r => r.CPF == cpf);
@@ -89,7 +112,7 @@ namespace PassengerAPI.Repositories
                     return passenger;
                 }
                 //To adult
-                else if (CalculateAge(passenger.DtBirth) > 18 && CalculateAge(currentPassenger.DtBirth) < 18)
+                else if (CalculateAge(passenger.DtBirth) > 18 && CalculateAge(minorPassenger.DtBirth) < 18)
                 {
                     _passenger.InsertOne(passenger);
                     _underAgePassenger.DeleteOne(u => u.CPF == cpf);

@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models
@@ -9,14 +10,14 @@ namespace Models
 
         [BsonId]
         [BsonElement("CPF")]
-        [RegularExpression(@"^\d{3}.\d{3}.\d{3}-\d{2}$", ErrorMessage = "Formato do CPF inválido")]
-        
+        //[RegularExpression(@"^\d{3}.\d{3}.\d{3}-\d{2}$", ErrorMessage = "Formato do CPF inválido")]        
         public string CPF { get; set; }
 
         [BsonElement("Name")]
         public string Name { get; set; }
 
         [BsonElement("Gender")]
+        [BsonRepresentation(BsonType.String)]        
         public char Gender { get; set; }
 
         [BsonElement("Phone")]

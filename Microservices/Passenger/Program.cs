@@ -1,13 +1,15 @@
 using Microsoft.Extensions.Options;
+using PassengerAPI.AddressService;
 using PassengerAPI.Repositories;
 using PassengerAPI.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.Configure<PassengerSettings>(builder.Configuration.GetSection("PassengerSettings"));
+builder.Services.Configure<PassengerSettings>(builder.Configuration.GetSection("PassengerAPISettings"));
 builder.Services.AddSingleton<IPassengerSettings>(sp => sp.GetRequiredService<IOptions<PassengerSettings>>().Value);
 builder.Services.AddSingleton<PassengerService>();
+builder.Services.AddSingleton<PostOffice>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
