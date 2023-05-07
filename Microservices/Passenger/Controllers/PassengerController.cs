@@ -40,9 +40,26 @@ namespace PassengerAPI.Controllers
 
         // POST api/<PassengerController>
         [HttpPost("{/Create}")]
-        public ActionResult Post([FromBody] Passenger passenger)
+        public ActionResult Post([FromBody] Passenger passenger, Address address)
         {
             if(!validateCPF.ValidateDoc(passenger.CPF)) return BadRequest("CPF Inválido!");
+            var zip = address.ZipCode;
+            var number = address.Number;
+            var complement= address.Complement;
+
+            AddressDTO addressDTO = _postOffice.GetAddress(address.ZipCode).Result;
+            var completeAddress = new Address(addressDTO)
+            {
+                Street = addressDTO.Street,
+                Number = number,
+                Complement = complement,
+                Neighborhood = addressDTO.Neighborhood,
+                City = addressDTO.City,
+                State = addressDTO.State,
+                ZipCode = zip
+            };
+
+            passenger.Address = new(addressDTO);
 
             _passengerService.Create(passenger);
             return StatusCode(201);

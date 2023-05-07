@@ -23,7 +23,7 @@ namespace Models
         public string? Phone{ get; set; }
 
         [BsonElement("DtBirth")]
-        public DateOnly DtBirth { get; set; }
+        public DateTime DtBirth { get; set; }
 
         [BsonElement("DtRegistry")]
         public DateTime DtRegistry { get; set; }

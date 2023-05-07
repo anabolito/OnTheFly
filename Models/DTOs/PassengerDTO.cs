@@ -1,14 +1,17 @@
 ﻿using Models;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace PassengerAPI.DTO
 {
     public class PassengerDTO
     {
+        [JsonIgnore]
+        public string CPF { get; set; }
         public string Name { get; set; }       
         public char Gender { get; set; }        
         public string? Phone { get; set; }        
-        public DateOnly DtBirth { get; set; }
+        public DateTime DtBirth { get; set; }
         public DateTime DtRegistry { get; set; }        
         public bool? Status { get; set; }        
         public Address Address { get; set; } 
