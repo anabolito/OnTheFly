@@ -10,7 +10,7 @@ namespace Models
     {
         public string RAB { get; set; }
         public int Capacity { get; set; }
-        public DateOnly DtLastFlight { get; set; }
+        public DateTime DtLastFlight { get; set; }
         public DateTime DtRegistry { get; set; }
         public Company Company { get; set; }
     }
