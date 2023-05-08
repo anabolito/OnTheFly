@@ -12,6 +12,7 @@ namespace CompanyAPI.Controller
     [ApiController]
     public class CompanyController : ControllerBase
     {
+        #region Injection
         private readonly CompanyRepository _companyRepository;
         private readonly PostOfficeService _postOfficeService;
 
@@ -19,6 +20,35 @@ namespace CompanyAPI.Controller
         {
             _companyRepository = companyRepository;
             _postOfficeService = postOfficeService;
+        }
+        #endregion
+
+        [HttpPost]
+        public ActionResult PostCompany(Company company)
+        {
+
+            var dto = _postOfficeService.GetAddress(company.Address.ZipCode).Result;
+
+            Address address = new()
+            {
+                Street = dto.Street,
+                Number = company.Address.Number,
+                State = dto.State,
+                ZipCode = dto.ZipCode,
+                City = dto.City,
+                Complement = company.Address.Complement
+            };
+            company.Address = address;
+
+            try
+            {
+                _companyRepository.CreateCompany(company);
+                return StatusCode(201);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("COMPANHIAS AÉREAS")]
@@ -76,34 +106,6 @@ namespace CompanyAPI.Controller
             _companyRepository.UpdateCompany(cnpj, companyAux);
 
             return StatusCode(202);
-        }
-
-        [HttpPost]
-        public ActionResult PostCompany(Company company)
-        {
-
-            var dto = _postOfficeService.GetAddress(company.Address.ZipCode).Result;
-
-            Address address = new()
-            {
-                Street = dto.Street,
-                Number = company.Address.Number,
-                State = dto.State,
-                ZipCode = dto.ZipCode,
-                City = dto.City,
-                Complement = company.Address.Complement
-            };
-            company.Address = address;
-
-            try
-            {
-                _companyRepository.CreateCompany(company);
-                return StatusCode(201);
-            }
-            catch (BadHttpRequestException ex)
-            {
-                return BadRequest(ex.Message);
-            }
         }
 
         [HttpDelete]

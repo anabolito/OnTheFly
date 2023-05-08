@@ -62,7 +62,9 @@ namespace CompanyAPI.Repositories
 
         public void UpdateCompany(string cnpj, Company company)
         {
-            var status = company.Status;
+            Company companyAux = new();
+            companyAux = _company.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
+            var status = companyAux.Status;
 
             _company.ReplaceOne(a => a.CNPJ == cnpj, company);
            

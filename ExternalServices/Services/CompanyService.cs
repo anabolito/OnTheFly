@@ -59,7 +59,6 @@ namespace Services
             }
         }
 
-        // Atualiza
         public async Task<Company> Update(string cnpj)
         {
             try
@@ -75,7 +74,6 @@ namespace Services
             }
         }
 
-        // Deleta
         public async Task<Company> Delete(string cnpj)
         {
             try

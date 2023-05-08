@@ -31,24 +31,9 @@ namespace CompanyAPI.DTO
         [JsonProperty("logradouro")]
         public string Street { get; set; }
 
-
-        //[JsonProperty("gia")]
-        //public string Number { get; set; }
-
-
         [JsonProperty("complemento")]
         public string Complety { get; set; }
 
-        //public AddressDTO(int id, string? street, string? complety, string? neighborhood, string? city, string? state, string? zipCode, string? number)
-        //{
-        //    Id = id;
-        //    Street = street;
-        //    Complety = complety;
-        //    Neighborhood = neighborhood;
-        //    City = city;
-        //    State = state;
-        //    ZipCode = zipCode;
-        //    Number = number;
-        //}
+        
     }
 }
