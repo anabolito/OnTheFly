@@ -9,12 +9,14 @@ namespace AircraftAPI.Services
     {
 
         private readonly IMongoCollection<Aircraft> _aircraft;
+        private readonly IMongoCollection<Aircraft> _deletedAircraft;
 
         public AircraftAPIRepository(IAircraftAPISettings settings)
         {
             var aircraft = new MongoClient(settings.ConnectionString);
             var database = aircraft.GetDatabase(settings.DatabaseName);
             _aircraft = database.GetCollection<Aircraft>(settings.AircraftCollectionName);
+            _deletedAircraft = database.GetCollection<Aircraft>(settings.DeletedAircraftCollectionName);
         }
 
         public List<Aircraft> Get()
@@ -68,6 +70,7 @@ namespace AircraftAPI.Services
             {
                 return new NotFoundResult();
             }
+            _deletedAircraft.InsertOne(aircraft);
             _aircraft.DeleteOne(c => c.RAB == id);
             return new OkResult();
         }
