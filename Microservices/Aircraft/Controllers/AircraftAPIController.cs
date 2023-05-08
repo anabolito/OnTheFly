@@ -23,11 +23,14 @@ namespace AircraftAPI.Controllers
         public ActionResult<Aircraft> Get(string id) => _aircraftAPIService.Get(id);
 
         [HttpPost]
-        public ActionResult<Aircraft> Create(Aircraft aircraft) => _aircraftAPIService.Create(aircraft);
+        public ActionResult<Aircraft> Create(Aircraft aircraft) => _aircraftAPIService.Create(aircraft).Result;
 
-        [HttpPut("{id}")]
-        public ActionResult Update(string id, Aircraft aircraft) => _aircraftAPIService.Update(id, aircraft);
-  
+        [HttpPut("UpdateDtLastFlight")]
+        public ActionResult UpdateDtLastFlight(string id, Aircraft aircraft) => _aircraftAPIService.UpdateDtLastFlight(id, aircraft);
+
+        [HttpPut("UpdateCompany")]
+        public ActionResult UpdateCompany(string id, Aircraft aircraft) => _aircraftAPIService.UpdateCompany(id, aircraft).Result;
+
         [HttpDelete("{id}")]
         public ActionResult Delete(string id) => _aircraftAPIService.Delete(id);
 

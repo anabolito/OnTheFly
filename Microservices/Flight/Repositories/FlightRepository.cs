@@ -23,7 +23,7 @@ namespace FlightAPI.Repositories
 
             _flights = flightDatabase.GetCollection<Flight>(settings.FlightsCollectionName);
             _canceledFlights = flightDatabase.GetCollection<Flight>(settings.CanceledFlightsCollectionName);
-            _deletedFlights = flightDatabase.GetCollection<Flight>(settings.)
+            _deletedFlights = flightDatabase.GetCollection<Flight>(settings.DeletedFlightsCollectionName);
         }
 
         #region Get
