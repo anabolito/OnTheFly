@@ -11,25 +11,48 @@ namespace CompanyAPI.Repositories
     public class CompanyRepository
     {
         private readonly IMongoCollection<Company> _company;
-
+        private readonly IMongoCollection<Company> _restrictedCompany;
+        private readonly IMongoCollection<Company> _releasedCompany;
         public CompanyRepository(IDatabaseSettings settings)
         {
             var company = new MongoClient(settings.ConnectionString);
             var database = company.GetDatabase(settings.DataBaseName);
             _company = database.GetCollection<Company>(settings.CompanyCollectionName);
+            _restrictedCompany = database.GetCollection<Company>(settings.RestrictedCompaniesCollectionName);
+            _releasedCompany = database.GetCollection<Company>(settings.ReleasedCompaniesCollectionName);
         }
 
         public List<Company> GetCompany() =>
             _company.Find(company => true).ToList();
 
+
+        public List<Company> GetRestrictedCompany() =>
+    _restrictedCompany.Find(company => true).ToList();
+
+
+        public List<Company> GetReleasedCompany() =>
+    _releasedCompany.Find(company => true).ToList();
+
         public Company CreateCompany(Company company)
         {
+
             if (!CnpjValidation(company.CNPJ))
             {
                 Console.WriteLine("CNPJ Inválido!");
                 throw new BadHttpRequestException("CNPJ Inválido!");
             }
+            
             _company.InsertOne(company);
+
+            if(company.Status == true)
+            {
+                _releasedCompany.InsertOne(company);
+            }
+            else
+            {
+                _restrictedCompany.InsertOne(company);
+
+            }
             return company;
         }
 
@@ -39,7 +62,20 @@ namespace CompanyAPI.Repositories
 
         public void UpdateCompany(string cnpj, Company company)
         {
+            var status = company.Status;
+
             _company.ReplaceOne(a => a.CNPJ == cnpj, company);
+           
+            if(status == true && company.Status == false)
+            {
+                _releasedCompany.DeleteOne(a => a.CNPJ == cnpj);
+                _restrictedCompany.InsertOne(company);
+            }
+            if (status == false && company.Status == true)
+            {
+                _restrictedCompany.DeleteOne(a => a.CNPJ == cnpj);
+                _releasedCompany.InsertOne(company);
+            }
         }
 
         public void DeleteCompany(string cnpj) => _company.DeleteOne(a => a.CNPJ == cnpj);
