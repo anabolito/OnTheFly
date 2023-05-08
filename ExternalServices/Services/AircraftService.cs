@@ -31,7 +31,7 @@ namespace Services
         }
 
         // Buscar aeronave por ID
-        public async Task<Aircraft> GetById(int rab)
+        public async Task<Aircraft> GetById(string rab)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace Services
         }
 
         // Deleta
-        public async Task<Aircraft> Delete(int rab)
+        public async Task<Aircraft> Delete(string rab)
         {
             try
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.DTO;
 using Services;
 
 namespace OnTheFly.Controllers
@@ -28,7 +29,7 @@ namespace OnTheFly.Controllers
 
         #region Post
         [HttpPost]
-        public ActionResult<Flight> PostFlight(Flight flight) => _flightService.Post(flight).Result;
+        public ActionResult<Flight> PostFlight(FlightDTO flight) => _flightService.Post(flight).Result;
         #endregion
 
         #region Put
