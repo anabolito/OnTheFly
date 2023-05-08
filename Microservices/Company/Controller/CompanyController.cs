@@ -34,10 +34,10 @@ namespace CompanyAPI.Controller
         }
 
         [HttpPut("{cnpj}")]
-        public ActionResult Put(string cnpj, Company company)
+        public ActionResult<Company> UpdateCompany(string cnpj, Company company)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
-            if (company == null) return NotFound("Companhia aérea não encontrada");
+            if (companyAux == null) return NotFound("Companhia aérea não encontrada");
 
             companyAux.CNPJ = company.CNPJ;
             companyAux.Name = company.Name;
@@ -45,6 +45,8 @@ namespace CompanyAPI.Controller
             companyAux.DtOpen = company.DtOpen;
             companyAux.Status = company.Status;
             companyAux.Address = company.Address;
+
+            _companyRepository.UpdateCompany(cnpj, companyAux);
 
             return StatusCode(202);
         }
