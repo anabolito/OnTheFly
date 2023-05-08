@@ -39,24 +39,44 @@ namespace CompanyAPI.Controller
             return company;
         }
 
-        [HttpPut("{cnpj}")]
-        public ActionResult<Company> UpdateCompany(string cnpj, Company company)
+        [HttpPut("{cnpj} Modificar Nome Fantasia")]
+        public ActionResult<Company> UpdateNameOptCompany(string cnpj, Company company)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
             if (companyAux == null) return NotFound("Companhia aérea não encontrada");
 
-            companyAux.CNPJ = company.CNPJ;
-            companyAux.Name = company.Name;
             companyAux.NameOpt = company.NameOpt;
-            companyAux.DtOpen = company.DtOpen;
-            companyAux.Status = company.Status;
-            companyAux.Address = company.Address;
 
             _companyRepository.UpdateCompany(cnpj, companyAux);
 
             return StatusCode(202);
         }
 
+        [HttpPut("{cnpj} Modificar Status da Companhia Aérea")]
+        public ActionResult<Company> UpdateStatusCompany(string cnpj, Company company)
+        {
+            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            if (companyAux == null) return NotFound("Companhia aérea não encontrada");
+
+            companyAux.Status = company.Status;
+
+            _companyRepository.UpdateCompany(cnpj, companyAux);
+
+            return StatusCode(202);
+        }
+
+        [HttpPut("{cnpj} Modificar Endereço da Companhia Aérea")]
+        public ActionResult<Company> UpdateAddressCompany(string cnpj, Company company)
+        {
+            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            if (companyAux == null) return NotFound("Companhia aérea não encontrada");
+
+            companyAux.Address = company.Address;
+
+            _companyRepository.UpdateCompany(cnpj, companyAux);
+
+            return StatusCode(202);
+        }
 
         [HttpPost]
         public ActionResult PostCompany(Company company)
@@ -67,10 +87,11 @@ namespace CompanyAPI.Controller
             Address address = new()
             {
                 Street = dto.Street,
-                Number = int.Parse(dto.Number),
+                Number = company.Address.Number,
                 State = dto.State,
                 ZipCode = dto.ZipCode,
                 City = dto.City,
+                Complement = company.Address.Complement
             };
             company.Address = address;
 

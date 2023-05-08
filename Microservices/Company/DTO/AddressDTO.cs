@@ -32,8 +32,8 @@ namespace CompanyAPI.DTO
         public string Street { get; set; }
 
 
-        [JsonProperty("gia")]
-        public string Number { get; set; }
+        //[JsonProperty("gia")]
+        //public string Number { get; set; }
 
 
         [JsonProperty("complemento")]
