@@ -10,7 +10,7 @@ namespace Models.DTO
     {
         public string IataDestiny { get; set; }
         public string IataDparture { get; set; }
-        public int RabPlane { get; set; }
+        public string RabPlane { get; set; }
         public int Sales { get; set; }
         public DateTime DtDeparture { get; set; }
         public bool Status { get; set; }

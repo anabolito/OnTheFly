@@ -14,6 +14,7 @@ namespace FlightAPI.Repositories
     {
         private readonly IMongoCollection<Flight> _flights;
         private readonly IMongoCollection<Flight> _canceledFlights;
+        private readonly IMongoCollection<Flight> _deletedFlights;
 
         public FlightRepository(IFlightSettings settings)
         {
@@ -22,6 +23,7 @@ namespace FlightAPI.Repositories
 
             _flights = flightDatabase.GetCollection<Flight>(settings.FlightsCollectionName);
             _canceledFlights = flightDatabase.GetCollection<Flight>(settings.CanceledFlightsCollectionName);
+            _deletedFlights = flightDatabase.GetCollection<Flight>(settings.)
         }
 
         #region Get
