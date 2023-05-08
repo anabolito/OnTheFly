@@ -8,7 +8,7 @@ namespace Models
 {
     public class Sale
     {
-        public List<Flight> Flights{ get; set; }
+        public Flight Flight{ get; set; }
         public List<Passenger> Passengers { get; set; }
         public bool Reserved { get; set; }
         public bool Sold { get; set; }

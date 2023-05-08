@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using RabbitMQ.Client;
 using SaleAPI.Repository;
 using SaleAPI.Utils;
 
@@ -14,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<SaleSettings>(builder.Configuration.GetSection("SalesSettings"));
 builder.Services.AddSingleton<ISaleSettings>(s => s.GetRequiredService<IOptions<SaleSettings>>().Value);
 builder.Services.AddSingleton<SaleRepository>();
+builder.Services.AddSingleton<ConnectionFactory>();
 
 var app = builder.Build();
 
