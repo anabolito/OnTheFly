@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.DTO;
 using Services;
 
 namespace OnTheFly.Controllers
@@ -28,18 +29,18 @@ namespace OnTheFly.Controllers
 
         #region Post
         [HttpPost]
-        public ActionResult<Flight> PostFlight(Flight flight) => _flightService.Post(flight).Result;
+        public ActionResult<Flight> PostFlight(FlightDTO flight) => _flightService.Post(flight).Result;
         #endregion
 
         #region Put
         [HttpPut("{iata}/{rab}/{date}")]
-        public ActionResult<Flight> PutFlight(string iata, string rab, string date) =>
+        public ActionResult<Flight> PutFlight(string iata, int rab, string date) =>
             _flightService.Put(iata, rab, date).Result;
         #endregion
 
         #region Delete
         [HttpDelete("{iata}/{rab}/{date}")]
-        public ActionResult<Flight> DeleteFlight(string iata, string rab, string date) =>
+        public ActionResult<Flight> DeleteFlight(string iata, int rab, string date) =>
             _flightService.Delete(iata, rab, date).Result;
         #endregion
     }
