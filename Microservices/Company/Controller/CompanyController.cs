@@ -98,9 +98,6 @@ namespace CompanyAPI.Controller
         public ActionResult<Company> UpdateAddressCompany(string cnpj, Address address)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
-            //if (companyAux == null) return NotFound("Companhia aérea não encontrada");
-
-            //companyAux.Address = address;
 
             var dto = _postOfficeService.GetAddress(companyAux.Address.ZipCode).Result;
 
