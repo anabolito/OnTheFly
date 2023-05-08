@@ -12,7 +12,6 @@ namespace CompanyAPI.Controller
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        #region Injection
         private readonly CompanyRepository _companyRepository;
         private readonly PostOfficeService _postOfficeService;
 
@@ -21,7 +20,6 @@ namespace CompanyAPI.Controller
             _companyRepository = companyRepository;
             _postOfficeService = postOfficeService;
         }
-        #endregion
 
         [HttpPost]
         public ActionResult PostCompany(Company company)

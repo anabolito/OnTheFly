@@ -21,18 +21,7 @@ namespace CompanyAPI.Repositories
             _restrictedCompany = database.GetCollection<Company>(settings.RestrictedCompaniesCollectionName);
             _releasedCompany = database.GetCollection<Company>(settings.ReleasedCompaniesCollectionName);
         }
-
-        public List<Company> GetCompany() =>
-            _company.Find(company => true).ToList();
-
-
-        public List<Company> GetRestrictedCompany() =>
-    _restrictedCompany.Find(company => true).ToList();
-
-
-        public List<Company> GetReleasedCompany() =>
-    _releasedCompany.Find(company => true).ToList();
-
+        
         public Company CreateCompany(Company company)
         {
 
@@ -55,11 +44,14 @@ namespace CompanyAPI.Repositories
             }
             return company;
         }
-
-
+        public List<Company> GetCompany() =>
+            _company.Find(company => true).ToList();
+        public List<Company> GetRestrictedCompany() =>
+    _restrictedCompany.Find(company => true).ToList();
+        public List<Company> GetReleasedCompany() =>
+    _releasedCompany.Find(company => true).ToList();
         public Company GetCompanyByCnpj(string cnpj) =>
             _company.Find(company => company.CNPJ == cnpj).FirstOrDefault();
-
         public void UpdateCompany(string cnpj, Company company)
         {
             Company companyAux = new();
@@ -79,11 +71,7 @@ namespace CompanyAPI.Repositories
                 _releasedCompany.InsertOne(company);
             }
         }
-
         public void DeleteCompany(string cnpj) => _company.DeleteOne(a => a.CNPJ == cnpj);
-
-
-
         public bool CnpjValidation(string cnpj)
         {
 
@@ -130,7 +118,6 @@ namespace CompanyAPI.Repositories
             return cnpj.EndsWith(digito);
 
         }
-
-
+    
     }
 }
