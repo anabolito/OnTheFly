@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 using Models;
 using PassengerAPI.AddressService;
 using PassengerAPI.DTO;
@@ -75,47 +76,97 @@ namespace PassengerAPI.Controllers
                 return BadRequest(e.Message);
             }   
         }
-
-        // PUT api/<PassengerController>/5
-        [HttpPut("{_id}")]
-        public ActionResult Put(int number, string complement ,string _id, PassengerDTO passengerDTO)
+        [HttpPut("{id}/address")]
+        public ActionResult<Passenger> UpdatePassengerAddress(string id, int number, string? complement, string cep)
         {
-            var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
+            var passenger = _passengerService.UpdatePassengerAddress(id, number, complement, cep);
+            if (passenger == null) return NotFound();
 
-            Address address;
-            if (complement == null)
-            {
-                 address = new()
-                {
-                    Number = number,                    
-
-                    Street = dto.Street,
-                    Neighborhood = dto.Neighborhood,
-                    City = dto.City,
-                    State = dto.State,
-                    ZipCode = dto.ZipCode,
-                };
-            }
-            else
-            {
-                address = new()
-                {
-                    Number = number,
-
-                    Complement = complement,
-
-                    Street = dto.Street,
-                    Neighborhood = dto.Neighborhood,
-                    City = dto.City,
-                    State = dto.State,
-                    ZipCode = dto.ZipCode,
-                };
-            }            
-
-            Passenger passenger = new(passengerDTO, address);
-            return StatusCode(202);
+            return Ok(passenger);
         }
 
+        // PUT api/<PassengerController>/5
+        //[HttpPut("{_id}")]
+        //public ActionResult Put(int number, string complement ,string _id, PassengerDTO passengerDTO)
+        //{
+        //    var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
+
+        //    Address address;
+        //    if (complement == null)
+        //    {
+        //         address = new()
+        //        {
+        //            Number = number,                    
+
+        //            Street = dto.Street,
+        //            Neighborhood = dto.Neighborhood,
+        //            City = dto.City,
+        //            State = dto.State,
+        //            ZipCode = dto.ZipCode,
+        //        };
+        //    }
+        //    else
+        //    {
+        //        address = new()
+        //        {
+        //            Number = number,
+
+        //            Complement = complement,
+
+        //            Street = dto.Street,
+        //            Neighborhood = dto.Neighborhood,
+        //            City = dto.City,
+        //            State = dto.State,
+        //            ZipCode = dto.ZipCode,
+        //        };
+        //    }            
+
+        //    Passenger passenger = new(passengerDTO, address);
+            
+        //    return Ok(passenger);
+        //}
+
+        //PUT api/<PassengerController>/5
+        //[HttpPut("{_id}")]
+        //public async ActionResult PutAddress(string _id, int number, string? complement, PassengerDTO passengerDTO)
+        //{
+        //    var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
+        //    var updatedPassenger = _passengerService.UpdateAddress(_id, number, complement, dto);
+
+        //    Address address;
+        //    if (complement == null)
+        //    {
+        //        address = new()
+        //        {
+        //            Number = number,
+
+        //            Street = dto.Street,
+        //            Neighborhood = dto.Neighborhood,
+        //            City = dto.City,
+        //            State = dto.State,
+        //            ZipCode = dto.ZipCode,
+        //        };
+                
+        //    }
+        //    else
+        //    {
+        //        address = new()
+        //        {
+        //            Number = number,
+
+        //            Complement = complement,
+
+        //            Street = dto.Street,
+        //            Neighborhood = dto.Neighborhood,
+        //            City = dto.City,
+        //            State = dto.State,
+        //            ZipCode = dto.ZipCode,
+        //        };
+        //    }            
+
+        //    if (updatedPassenger == null) return NotFound();
+        //    return Ok(updatedPassenger);
+        //}
 
         // DELETE api/<PassengerController>/5
         [HttpDelete("{DeleteCPF}")]
