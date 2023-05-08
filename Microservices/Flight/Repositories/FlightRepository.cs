@@ -41,6 +41,26 @@ namespace FlightAPI.Repositories
 
             return _flights.FindAsync(filter).Result.ToList();
         }
+
+        public async Task<ActionResult<Flight>> GetFlightAsync(string iata, string rab, string departure)
+        {
+            var decodedDate = HttpUtility.UrlDecode(departure);
+            var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            var builder = Builders<Flight>.Filter;
+
+            var airport = builder.Eq(f => f.Destiny.IATA, iata);
+            var plane = builder.Eq(f => f.Plane.RAB, rab);
+
+            var greater = Builders<Flight>.Filter.Gte(f => f.DtDeparture, date);
+            var less = Builders<Flight>.Filter.Lt(f => f.DtDeparture, date.AddDays(1));
+
+            var filter = builder.And(airport, plane, greater, less);
+
+            
+
+            return _flights.FindAsync(filter).Result.FirstOrDefault();
+        }
         #endregion
 
         #region Post
@@ -63,15 +83,20 @@ namespace FlightAPI.Repositories
         #endregion
 
         #region Put
-        public async Task<ActionResult> PutFlightAsync(Flight flight)
+        public async Task<ActionResult> PutFlightAsync(string iata, string rab, string departure)
         {
+            var decodedDate = HttpUtility.UrlDecode(departure);
+            var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             var builder = Builders<Flight>.Filter;
 
-            var airport = builder.Eq(f => f.Destiny.IATA, flight.Destiny.IATA);
-            var plane = builder.Eq(f => f.Plane.RAB, flight.Plane.RAB);
-            var date = builder.Eq(f => f.DtDeparture, flight.DtDeparture);
+            var airport = builder.Eq(f => f.Destiny.IATA, iata);
+            var plane = builder.Eq(f => f.Plane.RAB, rab);
 
-            var filter = builder.And(airport, plane, date);
+            var greater = Builders<Flight>.Filter.Gte(f => f.DtDeparture, date);
+            var less = Builders<Flight>.Filter.Lt(f => f.DtDeparture, date.AddDays(1));
+
+            var filter = builder.And(airport, plane, greater, less);
 
             var canceled = _flights.FindAsync(filter).Result.FirstOrDefault();
             canceled.Status = false;
@@ -85,15 +110,20 @@ namespace FlightAPI.Repositories
         #endregion
 
         #region Delete
-        public async Task<ActionResult<Flight>> DeleteFlightAsync(Flight flight)
+        public async Task<ActionResult<Flight>> DeleteFlightAsync(string iata, string rab, string departure)
         {
+            var decodedDate = HttpUtility.UrlDecode(departure);
+            var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             var builder = Builders<Flight>.Filter;
 
-            var airport = builder.Eq(f => f.Destiny.IATA, flight.Destiny.IATA);
-            var plane = builder.Eq(f => f.Plane.RAB, flight.Plane.RAB);
-            var date = builder.Eq(f => f.DtDeparture, flight.DtDeparture);
+            var airport = builder.Eq(f => f.Destiny.IATA, iata);
+            var plane = builder.Eq(f => f.Plane.RAB, rab);
 
-            var filter = builder.And(airport, plane, date);
+            var greater = Builders<Flight>.Filter.Gte(f => f.DtDeparture, date);
+            var less = Builders<Flight>.Filter.Lt(f => f.DtDeparture, date.AddDays(1));
+
+            var filter = builder.And(airport, plane, greater, less);
 
             await _flights.DeleteOneAsync(filter);
 

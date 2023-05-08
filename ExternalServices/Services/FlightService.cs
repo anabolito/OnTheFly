@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
@@ -21,6 +22,66 @@ namespace Services
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<List<Flight>>(flight);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Flight>> Get(string date)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url + date);
+                response.EnsureSuccessStatusCode();
+                string flight = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Flight>>(flight);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Flight> Post(Flight flight)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PostAsJsonAsync(url, flight);
+                response.EnsureSuccessStatusCode();
+                string flightDeserialized = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Flight>(flightDeserialized);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Flight> Put(string iata, string rab, string date)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/" + iata + "/" + rab + "/" + date, new {IATA = iata, RAB = rab, Departure = date });
+                response.EnsureSuccessStatusCode();
+                string flightDeserialized = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Flight>(flightDeserialized);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Flight> Delete(string iata, string rab, string date)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync(url + "/" + iata + "/" + rab + "/" + date);
+                response.EnsureSuccessStatusCode();
+                string flightDeserialized = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Flight>(flightDeserialized);
             }
             catch (HttpRequestException e)
             {

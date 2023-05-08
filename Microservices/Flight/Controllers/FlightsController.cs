@@ -31,13 +31,15 @@ namespace FlightAPI.Controllers
         #endregion
         
         #region Put
-        [HttpPut]
-        public ActionResult<Flight> PutFlight(Flight flight) => _flightRepository.PutFlightAsync(flight).Result;
+        [HttpPut("{iata}/{rab}/{date}")]
+        public ActionResult<Flight> PutFlight(string iata, string rab, string date) => 
+            _flightRepository.PutFlightAsync(iata, rab, date).Result;
         #endregion
         
         #region Delete
-        [HttpDelete]
-        public ActionResult<Flight> DeleteFlight(Flight flight) => _flightRepository.DeleteFlightAsync(flight).Result;
+        [HttpDelete("{iata}/{rab}/{date}")]
+        public ActionResult<Flight> DeleteFlight(string iata, string rab, string date) => 
+            _flightRepository.DeleteFlightAsync(iata, rab, date).Result;
         #endregion
     }
 }
