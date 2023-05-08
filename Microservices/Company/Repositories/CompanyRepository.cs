@@ -74,7 +74,6 @@ namespace CompanyAPI.Repositories
         public void DeleteCompany(string cnpj) => _company.DeleteOne(a => a.CNPJ == cnpj);
         public bool CnpjValidation(string cnpj)
         {
-
             cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
 
             if (cnpj.Length != 14)

@@ -3,6 +3,7 @@ using CompanyAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using MongoDB.Driver;
 using System.Net;
 
 
@@ -52,10 +53,10 @@ namespace CompanyAPI.Controller
         [HttpGet("COMPANHIAS AÉREAS")]
         public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
 
-        [HttpGet("COMPANHIAS RESTRITAS")]
+        [HttpGet("COMPANHIAS AÉREAS RESTRITAS")]
         public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetRestrictedCompany();
 
-        [HttpGet("COMPANHIAS LIBERADAS")]
+        [HttpGet("COMPANHIAS AÉREAS LIBERADAS")]
         public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
 
         [HttpGet("{cnpj}")]
@@ -68,12 +69,12 @@ namespace CompanyAPI.Controller
         }
 
         [HttpPut("{cnpj} Modificar Nome Fantasia")]
-        public ActionResult<Company> UpdateNameOptCompany(string cnpj, Company company)
+        public ActionResult<Company> UpdateNameOptCompany(string cnpj, string nameOpt)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
             if (companyAux == null) return NotFound("Companhia aérea não encontrada");
 
-            companyAux.NameOpt = company.NameOpt;
+            companyAux.NameOpt = nameOpt;
 
             _companyRepository.UpdateCompany(cnpj, companyAux);
 
@@ -94,12 +95,23 @@ namespace CompanyAPI.Controller
         }
 
         [HttpPut("{cnpj} Modificar Endereço da Companhia Aérea")]
-        public ActionResult<Company> UpdateAddressCompany(string cnpj, Company company)
+        public ActionResult<Company> UpdateAddressCompany(string cnpj, Address address)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
-            if (companyAux == null) return NotFound("Companhia aérea não encontrada");
+            //if (companyAux == null) return NotFound("Companhia aérea não encontrada");
 
-            companyAux.Address = company.Address;
+            //companyAux.Address = address;
+
+            var dto = _postOfficeService.GetAddress(companyAux.Address.ZipCode).Result;
+
+            address.Street = dto.Street;
+            address.Number = companyAux.Address.Number;
+            address.State = dto.State;
+            address.ZipCode = dto.ZipCode;
+            address.City = dto.City;
+            address.Complement = companyAux.Address.Complement;
+            
+            companyAux.Address = address;
 
             _companyRepository.UpdateCompany(cnpj, companyAux);
 
