@@ -1,14 +1,14 @@
 ﻿using PassengerAPI.Utils;
 using Models;
 using MongoDB.Driver;
+using PassengerAPI.DTO;
 
 namespace PassengerAPI.Repositories
 {
     public class PassengerService
     {
         private readonly IMongoCollection<Passenger> _passenger;
-        private readonly IMongoCollection<Passenger> _unactivatedPassenger;
-        private readonly IMongoCollection<Passenger> _underAgePassenger;
+        private readonly IMongoCollection<Passenger> _unactivatedPassenger;        
         private readonly IMongoCollection<Passenger> _restrictedPassenger;
 
         public PassengerService(IPassengerSettings settings)
@@ -17,21 +17,18 @@ namespace PassengerAPI.Repositories
             var database = passenger.GetDatabase(settings.DatabaseName);
 
             _passenger = database.GetCollection<Passenger>(settings.PassengerCollectionName);
-            _unactivatedPassenger = database.GetCollection<Passenger>(settings.InactivePassengerCollectionName);
-            _underAgePassenger = database.GetCollection<Passenger>(settings.UnderagePassengerCollectionName);
-            _restrictedPassenger = database.GetCollection <Passenger>(settings.RestrictPassengerCollectionName);
+            _unactivatedPassenger = database.GetCollection<Passenger>(settings.InactivePassengerCollectionName);            
+            _restrictedPassenger = database.GetCollection<Passenger>(settings.RestrictPassengerCollectionName);                      
         }
 
         #region[C]
         public Passenger Create(Passenger passenger)
         {
-            if (CalculateAge(passenger.DtBirth) < 18)
-                _underAgePassenger.InsertOne(passenger);
-            else if (!(bool)passenger.Status)
+            if (!(bool)passenger.Status)
                 _restrictedPassenger.InsertOne(passenger);
             else
-                _passenger.InsertOne(passenger); 
-           
+                _passenger.InsertOne(passenger);
+
             return passenger;
         }
         #endregion
@@ -40,30 +37,23 @@ namespace PassengerAPI.Repositories
         {
             var allPassengers = new List<Passenger>();
             var normalPassengers = _passenger.Find(p => true).ToList();
-            var restrictedPassengers = _restrictedPassenger.Find(p => true).ToList();
-            var underAgePassengers = _underAgePassenger.Find(p => true).ToList();           
+            var restrictedPassengers = _restrictedPassenger.Find(p => true).ToList();            
+
+            allPassengers.AddRange(normalPassengers);
+            allPassengers.AddRange(restrictedPassengers);            
 
             return allPassengers;
         }
 
-        public Passenger Get(string cpf)
-        { 
-            var normalPassenger = _passenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
-            var restrictedPassenger =_restrictedPassenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault(); 
-            var underAgePassenger =_underAgePassenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
-            var unactivatedPassenge = _unactivatedPassenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefault();
-
-            if (normalPassenger != null) return normalPassenger;
-            else if (restrictedPassenger != null) return restrictedPassenger;
-            else if (underAgePassenger != null) return underAgePassenger;
-            else if (unactivatedPassenge != null) return unactivatedPassenge;
-            else return new Passenger();
-            
+        public List<Passenger> GetCustomPassenger()
+        {
+            var passenger = _passenger.Find(u => true).ToList();
+            return passenger;
         }
 
         public List<Passenger> GetUnderAgeOnes()
         {
-            var underAgeOnes =_underAgePassenger.Find( u => true).ToList();
+            var underAgeOnes = _passenger.Find(u => true).ToList();
             return underAgeOnes;
         }
 
@@ -73,62 +63,60 @@ namespace PassengerAPI.Repositories
             return restrictedOnes;
         }
 
-        public Passenger GetByCPF(string cpf)
+        public Passenger GetByCPF(string _id)
         {
-            if (string.IsNullOrEmpty(cpf)) return new Passenger();
-            return _passenger.Find<Passenger>(x => x.CPF == cpf).FirstOrDefault();
+            var customPassenger = _passenger.Find(passenger => passenger.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find(passenger => passenger.CPF == _id).FirstOrDefault();         
+
+            if (customPassenger != null)
+                return customPassenger;
+            else
+                return restrictedPassenger;
+            
         }
         #endregion
         #region[U]
-        public Passenger Update(string cpf, Passenger passenger)
-        {
-            var currentPassenger = _passenger.Find(p => p.CPF == cpf).FirstOrDefault();
-            var minorPassenger = _underAgePassenger.Find(p => p.CPF == cpf).FirstOrDefault();
-            var restrictedPassenger = _restrictedPassenger.Find(p => p.CPF == cpf).FirstOrDefault();
-            var unactivatedPassenger = _unactivatedPassenger.Find(p => p.CPF == cpf).FirstOrDefault();
+        //public Passenger UpdateAddress(string _id, string cep, int number , string complement)
+        //{
+        //    var currentPassenger = _passenger.Find(p => p.CPF == _id).FirstOrDefault();            
+        //    var restrictedPassenger = _restrictedPassenger.Find(p => p.CPF == _id).FirstOrDefault();
+        //    var unactivatedPassenger = _unactivatedPassenger.Find(p => p.CPF == _id).FirstOrDefault();
 
-            if (currentPassenger != null)
-            {
-                //To False
-                if ((bool)!passenger.Status && (bool)currentPassenger.Status)
-                {
-                    _restrictedPassenger.InsertOne(currentPassenger);
-                    _passenger.DeleteOne(p => p.CPF == cpf);
-                    return new Passenger();
-                }
-                //To true
-                else if((bool)passenger.Status && (bool)!restrictedPassenger.Status)
-                {
-                    _passenger.InsertOne(passenger);
-                    _restrictedPassenger.DeleteOne(r => r.CPF == cpf);
-                    _passenger.ReplaceOne(p => p.CPF == cpf, passenger);
-                    return passenger;
-                }
-                //To minor
-                else if(CalculateAge(passenger.DtBirth) < 18 && CalculateAge(currentPassenger.DtBirth) > 18)
-                {
-                    _underAgePassenger.InsertOne(passenger);
-                    _passenger.DeleteOne(u => u.CPF == cpf);
-                    return passenger;
-                }
-                //To adult
-                else if (CalculateAge(passenger.DtBirth) > 18 && CalculateAge(minorPassenger.DtBirth) < 18)
-                {
-                    _passenger.InsertOne(passenger);
-                    _underAgePassenger.DeleteOne(u => u.CPF == cpf);
-                    _passenger.ReplaceOne(u => u.CPF == cpf, passenger);
-                    return passenger;
-                }
-                else 
-                {
-                    _passenger.ReplaceOne(p => p.CPF == cpf, passenger);
-                    return passenger;
+        //    if (currentPassenger != null)
+        //    {  
+        //        //Colocando na colecao de restritos
+        //        if ((bool)!passenger.Status && (bool)currentPassenger.Status)
+        //        {
+                    
+        //            _restrictedPassenger.InsertOne(currentPassenger);
+        //            _passenger.DeleteOne(p => p.CPF == _id);
+        //            return passenger;
+        //        }                           
+        //        else
+        //        {
+        //            _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+        //            return passenger;
+        //        }                
+        //    }            
+        //    if(restrictedPassenger != null)
+        //    {
+        //        //colocando na coleção comum
+        //        if ((bool)passenger.Status && (bool)!restrictedPassenger.Status)
+        //        {
+                    
+        //            _passenger.InsertOne(passenger);
+        //            _restrictedPassenger.DeleteOne(r => r.CPF == _id);
+        //        }
+        //        else 
+        //        { 
+        //            _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+        //            return passenger;
+        //        }
+                
+        //    }
+        //    return passenger;
 
-                }               
-            }
-            else return new Passenger();
-
-        }
+        //}
         #endregion
         #region[D]
         public async Task<Passenger> Delete(string cpf)
@@ -148,7 +136,7 @@ namespace PassengerAPI.Repositories
             var age = today.Year - bd.Year;
             if (bd.Date > today.AddYears(-age)) age--;
             return age;
-        }      
+        }
     }
 }
 

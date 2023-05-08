@@ -10,21 +10,6 @@ namespace Models
         public string? Complement { get; set; }
         public string? Neighborhood { get; set; }
         public string City { get; set; }
-        public string State { get; set; }
-
-        #region[Ctors]
-        public Address()
-        {
-        }
-
-        public Address(AddressDTO addressDTO)
-        {
-            Street = addressDTO.Street;            
-            Neighborhood = addressDTO.Neighborhood;
-            City = addressDTO.City;
-            Complement = addressDTO.Complement;
-            State = addressDTO.State;
-        }
-        #endregion
+        public string State { get; set; }        
     }
 }

@@ -1,27 +1,26 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using PassengerAPI.DTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
     public class Passenger
     {
-        #region[Properties]
-
+        #region[Properties]        
         [BsonId]
-        [BsonElement("CPF")]
-        //[RegularExpression(@"^\d{3}.\d{3}.\d{3}-\d{2}$", ErrorMessage = "Formato do CPF inválido")]        
+        [BsonRepresentation(BsonType.String)]
         public string CPF { get; set; }
 
         [BsonElement("Name")]
         public string Name { get; set; }
 
         [BsonElement("Gender")]
-        [BsonRepresentation(BsonType.String)]        
+        [BsonRepresentation(BsonType.String)]
         public char Gender { get; set; }
 
         [BsonElement("Phone")]
-        public string? Phone{ get; set; }
+        public string? Phone { get; set; }
 
         [BsonElement("DtBirth")]
         public DateTime DtBirth { get; set; }
@@ -33,7 +32,23 @@ namespace Models
         public bool? Status { get; set; }
 
         [BsonElement("Address")]
-        public Address Address{ get; set; }
+        public Address Address { get; set; }
+
+        public Passenger()
+        {
+        }
+
+        public Passenger(PassengerDTO dto, Address address)
+        {
+            CPF = dto.CPF;
+            Name = dto.Name;
+            Gender = dto.Gender;
+            Phone = dto.Phone;
+            DtBirth = dto.DtBirth;
+            DtRegistry = dto.DtRegistry;
+            Status = dto.Status;
+            Address = address;
+        }
 
         #endregion
     }

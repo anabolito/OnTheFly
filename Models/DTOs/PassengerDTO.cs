@@ -6,7 +6,7 @@ namespace PassengerAPI.DTO
 {
     public class PassengerDTO
     {
-        [JsonIgnore]
+        [BsonIgnore]
         public string CPF { get; set; }
         public string Name { get; set; }       
         public char Gender { get; set; }        
@@ -14,6 +14,6 @@ namespace PassengerAPI.DTO
         public DateTime DtBirth { get; set; }
         public DateTime DtRegistry { get; set; }        
         public bool? Status { get; set; }        
-        public Address Address { get; set; } 
+        public string CEP { get; set; } 
     }
 }
