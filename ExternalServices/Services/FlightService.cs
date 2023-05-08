@@ -74,7 +74,7 @@ namespace Services
             }
         }
 
-        public async Task<Flight> Put(string iata, int rab, string date)
+        public async Task<Flight> Put(string iata, string rab, string date)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace Services
             }
         }
 
-        public async Task<Flight> Delete(string iata, int rab, string date)
+        public async Task<Flight> Delete(string iata, string rab, string date)
         {
             try
             {

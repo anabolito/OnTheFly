@@ -34,13 +34,13 @@ namespace OnTheFly.Controllers
 
         #region Put
         [HttpPut("{iata}/{rab}/{date}")]
-        public ActionResult<Flight> PutFlight(string iata, int rab, string date) =>
+        public ActionResult<Flight> PutFlight(string iata, string rab, string date) =>
             _flightService.Put(iata, rab, date).Result;
         #endregion
 
         #region Delete
         [HttpDelete("{iata}/{rab}/{date}")]
-        public ActionResult<Flight> DeleteFlight(string iata, int rab, string date) =>
+        public ActionResult<Flight> DeleteFlight(string iata, string rab, string date) =>
             _flightService.Delete(iata, rab, date).Result;
         #endregion
     }

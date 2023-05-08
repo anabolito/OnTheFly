@@ -42,7 +42,7 @@ namespace FlightAPI.Repositories
             return _flights.FindAsync(filter).Result.ToList();
         }
 
-        public async Task<ActionResult<Flight>> GetFlightAsync(string iata, int rab, string departure)
+        public async Task<ActionResult<Flight>> GetFlightAsync(string iata, string rab, string departure)
         {
             var decodedDate = HttpUtility.UrlDecode(departure);
             var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -83,7 +83,7 @@ namespace FlightAPI.Repositories
         #endregion
 
         #region Put
-        public async Task<ActionResult> PutFlightAsync(string iata, int rab, string departure)
+        public async Task<ActionResult> PutFlightAsync(string iata, string rab, string departure)
         {
             var decodedDate = HttpUtility.UrlDecode(departure);
             var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -110,7 +110,7 @@ namespace FlightAPI.Repositories
         #endregion
 
         #region Delete
-        public async Task<ActionResult<Flight>> DeleteFlightAsync(string iata, int rab, string departure)
+        public async Task<ActionResult<Flight>> DeleteFlightAsync(string iata, string rab, string departure)
         {
             var decodedDate = HttpUtility.UrlDecode(departure);
             var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
