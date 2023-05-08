@@ -13,9 +13,17 @@ namespace Models
         [BsonId]
         [BsonRepresentation(BsonType.String)]
         public string RAB { get; set; }
+
+        [BsonElement("Capacity")]
         public int Capacity { get; set; }
+
+        [BsonElement("DtLastFlight")]
         public DateTime DtLastFlight { get; set; }
+
+        [BsonElement("DtRegistry")]
         public DateTime DtRegistry { get; set; }
+
+        [BsonElement("Company")]
         public Company Company { get; set; }
     }
 }

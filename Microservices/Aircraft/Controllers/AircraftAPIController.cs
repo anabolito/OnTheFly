@@ -23,31 +23,13 @@ namespace AircraftAPI.Controllers
         public ActionResult<Aircraft> Get(string id) => _aircraftAPIService.Get(id);
 
         [HttpPost]
-        public ActionResult<Aircraft> Create(Aircraft aircraft)
-        {
-            return _aircraftAPIService.Create(aircraft);
-        }
+        public ActionResult<Aircraft> Create(Aircraft aircraft) => _aircraftAPIService.Create(aircraft);
 
         [HttpPut("{id}")]
-        public ActionResult Update(string id, Aircraft aircraft)
-        {
-            var c = _aircraftAPIService.Get(id);
-            if (c == null) return NotFound();
-            _aircraftAPIService.Update(aircraft);
-            return Ok();
-        }
-
-
+        public ActionResult Update(string id, Aircraft aircraft) => _aircraftAPIService.Update(id, aircraft);
+  
         [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
-        {
-            if (id == null) return NotFound();
+        public ActionResult Delete(string id) => _aircraftAPIService.Delete(id);
 
-            var aircraft = _aircraftAPIService.Get(id);
-            if (aircraft == null) return NotFound();
-
-            _aircraftAPIService.Delete(id);
-            return Ok();
-        }
     }
 }
