@@ -55,6 +55,7 @@ namespace CompanyAPI.Controller
         {
 
             var dto = _postOfficeService.GetAddress(company.Address.ZipCode).Result;
+
             Address address = new()
             {
                 Street = dto.Street,
@@ -69,14 +70,12 @@ namespace CompanyAPI.Controller
             {
                 _companyRepository.CreateCompany(company);
                 return StatusCode(201);
-
             }
             catch (BadHttpRequestException ex)
             {
                 return BadRequest(ex.Message);
             }
         }
-
 
         [HttpDelete]
         public ActionResult Delete(string cnpj)

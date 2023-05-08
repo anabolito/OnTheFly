@@ -22,7 +22,6 @@ namespace CompanyAPI.Repositories
         public List<Company> GetCompany() =>
             _company.Find(company => true).ToList();
 
-
         public Company CreateCompany(Company company)
         {
             if (!CnpjValidation(company.CNPJ))
@@ -30,6 +29,7 @@ namespace CompanyAPI.Repositories
                 Console.WriteLine("CNPJ Inválido!");
                 throw new BadHttpRequestException("CNPJ Inválido!");
             }
+            _company.InsertOne(company);
             return company;
         }
 
