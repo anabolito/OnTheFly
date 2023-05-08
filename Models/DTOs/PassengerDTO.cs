@@ -5,8 +5,7 @@ using Newtonsoft.Json;
 namespace PassengerAPI.DTO
 {
     public class PassengerDTO
-    {
-        [BsonIgnore]
+    {       
         public string CPF { get; set; }
         public string Name { get; set; }       
         public char Gender { get; set; }        

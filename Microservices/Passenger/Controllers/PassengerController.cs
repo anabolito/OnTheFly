@@ -15,10 +15,10 @@ namespace PassengerAPI.Controllers
     public class PassengerController : ControllerBase
     {
 
-        private readonly PassengerService _passengerService;
+        private readonly PassengerRepository _passengerService;
         private readonly PostOffice _postOffice;
 
-        public PassengerController(PassengerService passengerService, PostOffice postOffice)
+        public PassengerController(PassengerRepository passengerService, PostOffice postOffice)
         {
             _passengerService = passengerService;
             _postOffice = postOffice;

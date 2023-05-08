@@ -28,6 +28,20 @@ namespace Services
 
         public async Task<Passenger> Post(PassengerDTO passengerDTO, int number, string complement)
         {
+            PostOffice post = new();
+            var compPassenger = post.GetAddress(passengerDTO.CEP).Result;
+
+            Address address = new()
+            {
+                Number = number,
+                Complement = complement,
+
+                Street = compPassenger.Street,
+                Neighborhood = compPassenger.Neighborhood,
+                City = compPassenger.City,
+                State = compPassenger.State,
+                ZipCode = compPassenger.ZipCode,
+            };
             Passenger passenger = new()
             {
                 CPF = passengerDTO.CPF,
@@ -36,9 +50,8 @@ namespace Services
                 Phone = passengerDTO.Phone,
                 DtBirth = passengerDTO.DtBirth,
                 Status = passengerDTO.Status,
-                Address = 
-
-            }
+                Address = address,
+            };
 
             try
             {

@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.Configure<PassengerSettings>(builder.Configuration.GetSection("PassengerAPISettings"));
 builder.Services.AddSingleton<IPassengerSettings>(sp => sp.GetRequiredService<IOptions<PassengerSettings>>().Value);
-builder.Services.AddSingleton<PassengerService>();
+builder.Services.AddSingleton<PassengerRepository>();
 builder.Services.AddSingleton<PostOffice>();
 
 builder.Services.AddControllers();

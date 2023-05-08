@@ -5,13 +5,13 @@ using PassengerAPI.DTO;
 
 namespace PassengerAPI.Repositories
 {
-    public class PassengerService
+    public class PassengerRepository
     {
         private readonly IMongoCollection<Passenger> _passenger;
         private readonly IMongoCollection<Passenger> _unactivatedPassenger;        
         private readonly IMongoCollection<Passenger> _restrictedPassenger;
 
-        public PassengerService(IPassengerSettings settings)
+        public PassengerRepository(IPassengerSettings settings)
         {
             var passenger = new MongoClient(settings.ConnectionString);
             var database = passenger.GetDatabase(settings.DatabaseName);
