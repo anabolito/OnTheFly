@@ -24,6 +24,12 @@ namespace CompanyAPI.Controller
         [HttpGet]
         public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
 
+        [HttpGet]
+        public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetCompany();
+
+        [HttpGet]
+        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetCompany();
+
         [HttpGet("{cnpj}")]
         public ActionResult<Company> Get(string cnpj)
         {

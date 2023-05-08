@@ -11,16 +11,28 @@ namespace CompanyAPI.Repositories
     public class CompanyRepository
     {
         private readonly IMongoCollection<Company> _company;
+        private readonly IMongoCollection<Company> _restrictedCompany;
+        private readonly IMongoCollection<Company> _releasedCompany;
 
         public CompanyRepository(IDatabaseSettings settings)
         {
             var company = new MongoClient(settings.ConnectionString);
             var database = company.GetDatabase(settings.DataBaseName);
             _company = database.GetCollection<Company>(settings.CompanyCollectionName);
+            _restrictedCompany = database.GetCollection<Company>(settings.RestrictedCompaniesCollectionName);
+            _releasedCompany = database.GetCollection<Company>(settings.ReleasedCompaniesCollectionName);
         }
 
         public List<Company> GetCompany() =>
             _company.Find(company => true).ToList();
+
+
+        public List<Company> GetRestrictedCompany() =>
+    _restrictedCompany.Find(company => true).ToList();
+
+
+        public List<Company> GetReleasedCompany() =>
+    _releasedCompany.Find(company => true).ToList();
 
         public Company CreateCompany(Company company)
         {
