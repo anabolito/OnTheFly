@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using MongoDB.Driver;
+using Services;
 
 namespace AircraftAPI.Services
 {
@@ -10,14 +11,18 @@ namespace AircraftAPI.Services
 
         private readonly IMongoCollection<Aircraft> _aircraft;
         private readonly IMongoCollection<Aircraft> _deletedAircraft;
+        private readonly CompanyService _companyService;
 
-        public AircraftAPIRepository(IAircraftAPISettings settings)
+        public AircraftAPIRepository(IAircraftAPISettings settings, CompanyService companyService)
         {
             var aircraft = new MongoClient(settings.ConnectionString);
             var database = aircraft.GetDatabase(settings.DatabaseName);
             _aircraft = database.GetCollection<Aircraft>(settings.AircraftCollectionName);
             _deletedAircraft = database.GetCollection<Aircraft>(settings.DeletedAircraftCollectionName);
+
+            _companyService = companyService;
         }
+
 
         public List<Aircraft> Get()
         {
@@ -29,20 +34,30 @@ namespace AircraftAPI.Services
             return _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
         }
 
-        public ActionResult Create(Aircraft aircraft)
+        public async Task<ActionResult> Create(Aircraft aircraft)
         {
-            if (aircraft.Company.Status == true)
+            Company company = new Company();
+            company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
+            aircraft.Company = company;
+
+            if (company != null)
             {
-                if (ValidateRAB(aircraft.RAB))
+                if (aircraft.Company.Status == true)
                 {
-                    _aircraft.InsertOne(aircraft);
-                    return new OkResult();
+                    if (ValidateRAB(aircraft.RAB))
+                    {
+                        string s = aircraft.RAB.ToUpper();
+                        aircraft.RAB = s;
+                        _aircraft.InsertOne(aircraft);
+                        return new OkResult();  
+                    }
                 }
             }
+
             return new NotFoundResult();
         }
 
-        public ActionResult Update(string id, Aircraft aircraft)
+        public ActionResult UpdateDtLastFlight(string id, Aircraft aircraft)
         {
             var c = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
 
@@ -52,11 +67,31 @@ namespace AircraftAPI.Services
             }
 
             c.DtLastFlight = aircraft.DtLastFlight;
-            c.Company.CNPJ = aircraft.Company.CNPJ; //fazer chamada do microserviço para popular o objeto compania
-
 
             _aircraft.ReplaceOne(c => c.RAB == aircraft.RAB, c);
             return new OkResult();
+        }
+
+        public async Task<ActionResult> UpdateCompany(string id, Aircraft aircraft)
+        {
+            var c = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
+
+            if (c == null)
+            {
+                return new NotFoundResult();
+            }
+
+            Company company = new Company();
+            company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
+            c.Company = company;
+
+            if(c.Company.Status == true)
+            {
+                _aircraft.ReplaceOne(c => c.RAB == aircraft.RAB, c);
+                return new OkResult();
+            }
+
+            return new NotFoundResult();
         }
 
         public ActionResult Delete(string id)

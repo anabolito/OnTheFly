@@ -18,6 +18,5 @@ namespace Models
         public DateTime DtOpen { get; set; }
         public bool? Status { get; set; }
         public Address Address { get; set; }
-
     }
 }
