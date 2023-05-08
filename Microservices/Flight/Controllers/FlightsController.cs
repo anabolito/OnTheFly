@@ -19,25 +19,25 @@ namespace FlightAPI.Controllers
 
         #region Get
         [HttpGet]
-        public ActionResult<List<Flight>> GetFlight() => _flightRepository.GetFlight();
+        public ActionResult<List<Flight>> GetFlight() => _flightRepository.GetFlightAsync().Result;
 
-        [HttpGet("{Date}")]
-        public ActionResult<List<Flight>> GetFlight(DateOnly departure) => _flightRepository.GetFlight(departure);
+        [HttpGet("{departure}")]
+        public ActionResult<List<Flight>> GetFlight(string departure) => _flightRepository.GetFlightAsync(departure).Result;
         #endregion
 
         #region Post
         [HttpPost]
-        public ActionResult<Flight> PostFlight(Flight flight) => _flightRepository.PostFlight(flight);
+        public ActionResult<Flight> PostFlight(Flight flight) => _flightRepository.PostFlightAsync(flight).Result;
         #endregion
         
         #region Put
         [HttpPut]
-        public ActionResult<Flight> PutFlight(Flight flight) => _flightRepository.PutFlight(flight);
+        public ActionResult<Flight> PutFlight(Flight flight) => _flightRepository.PutFlightAsync(flight).Result;
         #endregion
         
         #region Delete
         [HttpDelete]
-        public ActionResult<Flight> DeleteFlight(Flight flight) => _flightRepository.DeleteFlight(flight);
+        public ActionResult<Flight> DeleteFlight(Flight flight) => _flightRepository.DeleteFlightAsync(flight).Result;
         #endregion
     }
 }

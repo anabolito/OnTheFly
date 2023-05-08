@@ -6,28 +6,27 @@ namespace Models
 {
     public class Flight
     {
-        //[BsonId]
-        //[BsonRepresentation(BsonType.ObjectId)]
-        //public string Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         [BsonElement("Destiny")]
         public Airport Destiny { get; set; }
 
-        [JsonPropertyName("Departure")]
+        [BsonElement("Departure")]
         public Airport Departure{ get; set; }
 
-        [JsonPropertyName("Plane")]
+        [BsonElement("Plane")]
         public Aircraft Plane { get; set; }
 
-        [JsonPropertyName("Sales")]
+        [BsonElement("Sales")]
         public int Sales { get; set; }
 
-        [JsonPropertyName("DtDeparture")]
+        [BsonElement("DtDeparture")]
         [BsonRepresentation(BsonType.DateTime)]
         public DateTime DtDeparture { get; set; }
 
-        [JsonPropertyName("Status")]
-        [BsonRepresentation(BsonType.Boolean)]
+        [BsonElement("Status")]
         public bool Status { get; set; }
     }
 }
