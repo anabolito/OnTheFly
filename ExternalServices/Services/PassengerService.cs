@@ -30,15 +30,22 @@ namespace Services
         {
             Passenger passenger = new()
             {
+                CPF = passengerDTO.CPF,
                 Name = passengerDTO.Name,
+                Gender = passengerDTO.Gender,
+                Phone = passengerDTO.Phone,
+                DtBirth = passengerDTO.DtBirth,
+                Status = passengerDTO.Status,
+                Address = 
+
             }
 
             try
             {
                 HttpResponseMessage response = await client.PostAsJsonAsync(url, passenger);
                 response.EnsureSuccessStatusCode();
-                string passenger = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Passenger>(passenger);
+                string passengerA = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Passenger>(passengerA);
             }
             catch (HttpRequestException ex)
             {
