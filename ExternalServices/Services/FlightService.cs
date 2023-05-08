@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
-using Models.DTO;
+using Models.DTOs;
 using Newtonsoft.Json;
 
 namespace Services
