@@ -42,6 +42,16 @@ namespace CompanyAPI.Repositories
                 throw new BadHttpRequestException("CNPJ Inválido!");
             }
             _company.InsertOne(company);
+
+            if(company.Status == true)
+            {
+                _releasedCompany.InsertOne(company);
+            }
+            else
+            {
+                _restrictedCompany.InsertOne(company);
+
+            }
             return company;
         }
 

@@ -21,14 +21,14 @@ namespace CompanyAPI.Controller
             _postOfficeService = postOfficeService;
         }
 
-        [HttpGet]
+        [HttpGet("COMPANHIAS AÉREAS")]
         public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
 
-        [HttpGet]
-        public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetCompany();
+        [HttpGet("COMPANHIAS RESTRITAS")]
+        public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetRestrictedCompany();
 
-        [HttpGet]
-        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetCompany();
+        [HttpGet("COMPANHIAS LIBERADAS")]
+        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
 
         [HttpGet("{cnpj}")]
         public ActionResult<Company> Get(string cnpj)
