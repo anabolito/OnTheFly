@@ -4,6 +4,7 @@
     {
         string FlightsCollectionName { get; set; }
         string CanceledFlightsCollectionName { get; set; }
+        string DeletedFlightsCollectionName { get; set; }
         string ConnectionString { get; set; }
         string DataBaseName { get; set; }
     }

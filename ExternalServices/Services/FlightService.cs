@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
+using Models.DTO;
 using Newtonsoft.Json;
 
 namespace Services
@@ -44,8 +45,22 @@ namespace Services
             }
         }
 
-        public async Task<Flight> Post(Flight flight)
+        public async Task<Flight> Post(FlightDTO flightDTO)
         {
+            var destiny = new AirportService().GetIata(flightDTO.IataDestiny).Result;
+            var departure = new AirportService().GetIata(flightDTO.IataDparture).Result;
+            var plane = new AircraftService().GetById(flightDTO.RabPlane).Result;
+
+            Flight flight = new Flight()
+            {
+                Destiny = destiny,
+                Departure = departure,
+                Plane = plane,
+                DtDeparture = flightDTO.DtDeparture,
+                Sales = flightDTO.Sales,
+                Status = flightDTO.Status
+            };
+
             try
             {
                 HttpResponseMessage response = await client.PostAsJsonAsync(url, flight);

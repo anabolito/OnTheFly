@@ -1,3 +1,7 @@
+using Microsoft.Extensions.Options;
+using SaleAPI.Repository;
+using SaleAPI.Utils;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<SaleSettings>(builder.Configuration.GetSection("SalesSettings"));
+builder.Services.AddSingleton<ISaleSettings>(s => s.GetRequiredService<IOptions<SaleSettings>>().Value);
+builder.Services.AddSingleton<SaleRepository>();
 
 var app = builder.Build();
 
