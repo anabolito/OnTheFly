@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
@@ -28,5 +29,69 @@ namespace Services
                 throw;
             }
         }
+
+        // Buscar aeronave por ID
+        public async Task<Aircraft> GetById(int rab)
+        {
+            try
+            {
+                HttpResponseMessage response = await AircraftService.aircraftClient.GetAsync("https://localhost:7036/api/AircraftAPI" + $"/{rab}");
+                response.EnsureSuccessStatusCode();
+                string aircraft = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Aircraft>(aircraft);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Aircraft> Insert(Aircraft c)
+        {
+            try
+            {
+                HttpResponseMessage response = await AircraftService.aircraftClient.PostAsJsonAsync("https://localhost:7036/api/AircraftAPI", c);
+                response.EnsureSuccessStatusCode();
+                string aircraft = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Aircraft>(aircraft);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        // Atualiza
+        public async Task<Aircraft> Update(Aircraft c)
+        {
+            try
+            {
+                HttpResponseMessage response = await AircraftService.aircraftClient.PutAsJsonAsync("https://localhost:7036/api/AircraftAPI" + $"/{c.RAB}", c);
+                response.EnsureSuccessStatusCode();
+                string aircraft = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Aircraft>(aircraft);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        // Deleta
+        public async Task<Aircraft> Delete(int rab)
+        {
+            try
+            {
+                HttpResponseMessage response = await AircraftService.aircraftClient.DeleteAsync("https://localhost:7036/api/AircraftAPI" + $"/{rab}");
+                response.EnsureSuccessStatusCode();
+                string aircraft = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Aircraft>(aircraft);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
     }
 }
