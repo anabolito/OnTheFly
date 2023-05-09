@@ -46,6 +46,24 @@ namespace Services
             }
         }
 
+        // Retornar o numero de acentos da aeronave
+        public async Task<Aircraft> GetCapacity(string rab)
+        {
+            try
+            {
+                HttpResponseMessage response = await AircraftService.aircraftClient.GetAsync("https://localhost:7036/api/AircraftAPI" + $"/{rab}");
+                response.EnsureSuccessStatusCode();
+                string aircraft = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Aircraft>(aircraft);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+
+        // Inserir aeronave
         public async Task<Aircraft> Insert(Aircraft c)
         {
             try
