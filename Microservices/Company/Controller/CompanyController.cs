@@ -25,7 +25,7 @@ namespace CompanyAPI.Controller
         [HttpPost]
         public ActionResult PostCompany(Company company)
         {
-
+            
             var dto = _postOfficeService.GetAddress(company.Address.ZipCode).Result;
 
             Address address = new()
@@ -38,6 +38,11 @@ namespace CompanyAPI.Controller
                 Complement = company.Address.Complement
             };
             company.Address = address;
+
+            if(company.NameOpt == null)
+            {
+                company.NameOpt = company.Name;
+            }
 
             try
             {
@@ -58,6 +63,9 @@ namespace CompanyAPI.Controller
 
         [HttpGet("ReleasedCompany")]
         public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
+        
+        [HttpGet("DeletedCompany")]
+        public ActionResult<List<Company>> GetDeletedCompany() => _companyRepository.GetDeletedCompany();
 
         [HttpGet("{cnpj}")]
         public ActionResult<Company> GetByCnpj(string cnpj)
@@ -114,7 +122,18 @@ namespace CompanyAPI.Controller
 
             return StatusCode(202);
         }
-       
+
+        [HttpPut("{cnpj}StreetAddressUpdate")]
+        public ActionResult<Company> UpdateStreetAddress(string cnpj, string street)
+        {
+            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            companyAux.Address.Street = street;
+
+            _companyRepository.UpdateCompany(cnpj, companyAux);
+
+            return StatusCode(202);
+        }
+
         [HttpPut("{cnpj}Restriction")]
         public ActionResult<Company> UpdateRestrictionCompany(string cnpj)
         {

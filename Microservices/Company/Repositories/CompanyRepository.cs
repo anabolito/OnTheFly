@@ -13,6 +13,7 @@ namespace CompanyAPI.Repositories
         private readonly IMongoCollection<Company> _company;
         private readonly IMongoCollection<Company> _restrictedCompany;
         private readonly IMongoCollection<Company> _releasedCompany;
+        private readonly IMongoCollection<Company> _deletedCompany;
         public CompanyRepository(IDatabaseSettings settings)
         {
             var company = new MongoClient(settings.ConnectionString);
@@ -20,6 +21,8 @@ namespace CompanyAPI.Repositories
             _company = database.GetCollection<Company>(settings.CompanyCollectionName);
             _restrictedCompany = database.GetCollection<Company>(settings.RestrictedCompaniesCollectionName);
             _releasedCompany = database.GetCollection<Company>(settings.ReleasedCompaniesCollectionName);
+            _deletedCompany = database.GetCollection<Company>(settings.DeletedCompaniesCollectionName);
+            
         }
 
         public Company CreateCompany(Company company)
@@ -31,7 +34,6 @@ namespace CompanyAPI.Repositories
                 throw new BadHttpRequestException("CNPJ Inválido!");
             }
 
-            _company.InsertOne(company);  // ver com a Si se posso dispensar
             _releasedCompany.InsertOne(company);
            
             return company;
@@ -42,6 +44,8 @@ namespace CompanyAPI.Repositories
     _restrictedCompany.Find(company => true).ToList();
         public List<Company> GetReleasedCompany() =>
     _releasedCompany.Find(company => true).ToList();
+        public List<Company> GetDeletedCompany() =>
+    _deletedCompany.Find(company => true).ToList();
         public Company GetCompanyByCnpj(string cnpj) =>
             _company.Find(company => company.CNPJ == cnpj).FirstOrDefault();
 
@@ -72,7 +76,14 @@ namespace CompanyAPI.Repositories
             }
                 return true;
         }
-        public void DeleteCompany(string cnpj) => _company.DeleteOne(a => a.CNPJ == cnpj);
+        public void DeleteCompany(string cnpj)
+        {
+            var company = _company.Find(a => a.CNPJ == cnpj).FirstOrDefault();
+
+            _deletedCompany.InsertOne(company);
+            _company.DeleteOne(a => a.CNPJ == cnpj);
+        }
+
         public bool CnpjValidation(string cnpj)
         {
             cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
