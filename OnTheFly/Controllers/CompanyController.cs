@@ -3,26 +3,24 @@ using CompanyAPI.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using MongoDB.Driver;
-using System.Net;
+using Services;
 
-
-namespace CompanyAPI.Controller
+namespace OnTheFly.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly CompanyRepository _companyRepository;
+        private readonly CompanyService _companyService;
         private readonly PostOfficeService _postOfficeService;
 
-        public CompanyController(CompanyRepository companyRepository, PostOfficeService postOfficeService)
+        public CompanyController(CompanyService companyService, PostOfficeService postOfficeService)
         {
-            _companyRepository = companyRepository;
+            _companyService = companyService;
             _postOfficeService = postOfficeService;
         }
 
-        [HttpPost]
+        [HttpPost("Company", Name = "Company")]
         public ActionResult PostCompany(Company company)
         {
 
@@ -41,7 +39,7 @@ namespace CompanyAPI.Controller
 
             try
             {
-                _companyRepository.CreateCompany(company);
+                _companyService.Insert(company);
                 return StatusCode(201);
             }
             catch (BadHttpRequestException ex)
@@ -50,54 +48,60 @@ namespace CompanyAPI.Controller
             }
         }
 
-        [HttpGet("COMPANHIAS AÉREAS")]
-        public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
+        //[HttpGet("All", Name = "COMPANHIAS AÉREAS")]
+        //public ActionResult<List<Company>> GetCompany() => _companyService.Get().Result;
 
-        [HttpGet("COMPANHIAS AÉREAS RESTRITAS")]
-        public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetRestrictedCompany();
+        //[HttpGet("Restricted",Name = "COMPANHIAS AÉREAS RESTRITAS")]
+        //public ActionResult<List<Company>> GetRestrictedCompany() => _companyService.GetRestrictedCompany().Result;
 
-        [HttpGet("COMPANHIAS AÉREAS LIBERADAS")]
-        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
+        //[HttpGet("Released", Name ="COMPANHIAS AÉREAS LIBERADAS")]
+        //public ActionResult<List<Company>> GetReleasedCompany() => _companyService.GetReleasedCompany().Result;
 
-        [HttpGet("{cnpj}")]
-        public ActionResult<Company> GetByCnpj(string cnpj)
-        {
-            var company = _companyRepository.GetCompanyByCnpj(cnpj);
+        //[HttpGet("Company/{cnpj}")]
+        //public ActionResult<Company> Get(string cnpj)
+        //{
+        //    var company = _companyService.GetByCnpj(cnpj);
 
-            if (company == null) return NotFound();
-            return company;
-        }
+        //    if (company == null) return NotFound();
+        //    return company.Result;
+        //}
 
-        [HttpPut("{cnpj} Modificar Nome Fantasia")]
+        [HttpPut("Name/{cnpj}", Name = "Modificar Nome Fantasia")]
         public ActionResult<Company> UpdateNameOptCompany(string cnpj, string nameOpt)
         {
-            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            Company companyAux = new();
+            companyAux = _companyService.GetByCnpj(cnpj).Result;
+
             if (companyAux == null) return NotFound("Companhia aérea não encontrada");
+            
 
             companyAux.NameOpt = nameOpt;
 
-            _companyRepository.UpdateCompany(cnpj, companyAux);
+            _companyService.UpdateNameOptCompany(cnpj, companyAux.NameOpt);
 
             return StatusCode(202);
         }
 
-        [HttpPut("{cnpj} Modificar Status da Companhia Aérea")]
-        public ActionResult<Company> UpdateStatusCompany(string cnpj, bool status)
+        [HttpPut("State/{cnpj}", Name = "Modificar Status da Companhia Aérea")]
+        public ActionResult<Company> UpdateStatusCompany(string cnpj, Company company)
         {
-            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            Company companyAux = new();
+            companyAux = _companyService.GetByCnpj(cnpj).Result;
             if (companyAux == null) return NotFound("Companhia aérea não encontrada");
 
-            companyAux.Status = status;
+            companyAux.Status = company.Status;
 
-            _companyRepository.UpdateCompany(cnpj, companyAux);
+            _companyService.UpdateStatusCompany(cnpj, companyAux.Status);
 
             return StatusCode(202);
         }
 
-        [HttpPut("{cnpj} Modificar Endereço da Companhia Aérea")]
+        [HttpPut("Address/{cnpj}", Name = "Modificar Endereço da Companhia Aérea")]
         public ActionResult<Company> UpdateAddressCompany(string cnpj, Address address)
         {
-            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            Company companyAux = new();
+
+            companyAux = _companyService.GetByCnpj(cnpj).Result;
 
             var dto = _postOfficeService.GetAddress(companyAux.Address.ZipCode).Result;
 
@@ -107,24 +111,25 @@ namespace CompanyAPI.Controller
             address.ZipCode = dto.ZipCode;
             address.City = dto.City;
             address.Complement = companyAux.Address.Complement;
-            
+
             companyAux.Address = address;
 
-            _companyRepository.UpdateCompany(cnpj, companyAux);
+            _companyService.UpdateAddressCompany(cnpj);
 
             return StatusCode(202);
         }
 
-        [HttpDelete]
+        [HttpDelete("CNPJ")]
         public ActionResult Delete(string cnpj)
         {
             if (cnpj == null) return NotFound();
-            var address = _companyRepository.GetCompanyByCnpj(cnpj);
+            var address = _companyService.GetByCnpj(cnpj);
 
             if (address == null) return NotFound();
 
-            _companyRepository.DeleteCompany(cnpj);
+            _companyService.Delete(cnpj);
             return Ok();
         }
     }
 }
+

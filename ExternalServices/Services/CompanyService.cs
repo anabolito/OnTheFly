@@ -29,6 +29,35 @@ namespace Services
             }
         }
 
+        public async Task<List<Company>> GetRestrictedCompany() 
+        {
+            try
+            {
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync("https://localhost:7099/api/Company/" + "COMPANHIAS AÉREAS RESTRITAS");
+                response.EnsureSuccessStatusCode();
+                string company = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Company>>(company);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Company>> GetReleasedCompany() 
+        {
+            try
+            {
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync("https://localhost:7099/api/Company/"+"COMPANHIAS AÉREAS LIBERADAS");
+                response.EnsureSuccessStatusCode();
+                string company = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Company>>(company);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
         public async Task<Company> GetByCnpj(string cnpj)
         {
             try
@@ -44,6 +73,7 @@ namespace Services
             }
         }
 
+       
         public async Task<Company> Insert(Company c)
         {
             try
@@ -59,11 +89,11 @@ namespace Services
             }
         }
 
-        public async Task<Company> Update(string cnpj)
+        public async Task<Company> UpdateNameOptCompany(string cnpj, string nameOpt)
         {
             try
             {
-                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj}");
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj} Modificar Nome Fantasia?nameOpt={nameOpt}");
                 response.EnsureSuccessStatusCode();
                 string company = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Company>(company);
@@ -73,7 +103,34 @@ namespace Services
                 throw;
             }
         }
-
+        public async Task<Company> UpdateStatusCompany(string cnpj, bool status)
+        {
+            try
+            {
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj} Modificar Status da Companhia Aérea?status={status}");
+                response.EnsureSuccessStatusCode();
+                string company = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Company>(company);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+        public async Task<Company> UpdateAddressCompany(string cnpj)
+        {
+            try
+            {
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj} Modificar Endereço da Companhia Aérea");
+                response.EnsureSuccessStatusCode();
+                string company = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Company>(company);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
         public async Task<Company> Delete(string cnpj)
         {
             try
