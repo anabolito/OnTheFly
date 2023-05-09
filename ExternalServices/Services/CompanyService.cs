@@ -93,7 +93,7 @@ namespace Services
         {
             try
             {
-                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj} StatusNameOpt?nameOpt={nameOpt}");
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj}NameOptUpdate?nameOpt={nameOpt}");
                 response.EnsureSuccessStatusCode();
                 string company = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Company>(company);
@@ -107,7 +107,7 @@ namespace Services
         {
             try
             {
-                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj} Modificar Status da Companhia Aérea?status={status}");
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj}StatusUpdate?status={status}");
                 response.EnsureSuccessStatusCode();
                 string company = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Company>(company);
@@ -121,7 +121,7 @@ namespace Services
         {
             try
             {
-                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj} Modificar Endereço da Companhia Aérea");
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj}AddressUpdate");
                 response.EnsureSuccessStatusCode();
                 string company = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Company>(company);
@@ -131,6 +131,22 @@ namespace Services
                 throw;
             }
         }
+
+        public async Task<Company> UpdateRestrictionCompany(string cnpj)
+        {
+            try
+            {
+                HttpResponseMessage response = await CompanyService.companyClient.GetAsync($"https://localhost:7099/api/Company/{cnpj}Restriction");
+                response.EnsureSuccessStatusCode();
+                string company = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Company>(company);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
         public async Task<Company> Delete(string cnpj)
         {
             try
