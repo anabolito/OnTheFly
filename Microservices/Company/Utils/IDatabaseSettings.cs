@@ -5,6 +5,7 @@
         string CompanyCollectionName { get; set; }
         string RestrictedCompaniesCollectionName { get; set; }
         string ReleasedCompaniesCollectionName { get; set; }
+        string DeletedCompaniesCollectionName { get; set; }
         string ConnectionString { get; set; }
         string DataBaseName { get; set; }
     }
