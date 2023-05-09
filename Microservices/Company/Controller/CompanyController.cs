@@ -56,14 +56,45 @@ namespace CompanyAPI.Controller
         }
 
         [HttpGet("ReleasedCompany")]
-        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
+        public ActionResult<List<Company>> GetReleasedCompany()
+        {
+            if (_companyRepository.GetReleasedCompany() == null)
+            {
+                Console.WriteLine("Não há companhias liberadas.");
+                return StatusCode(404);
+            }
+            return _companyRepository.GetReleasedCompany();
+        }
 
         [HttpGet("RestrictedCompany")]
-        public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetRestrictedCompany();
+        public ActionResult<List<Company>> GetRestrictedCompany()
+        {
+            try
+            {
+                _companyRepository.GetRestrictedCompany();
+                return StatusCode(201);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return NotFound(ex.Message);
+            }
+             
+        }
 
-        
         [HttpGet("DeletedCompany")]
-        public ActionResult<List<Company>> GetDeletedCompany() => _companyRepository.GetDeletedCompany();
+        public ActionResult<List<Company>> GetDeletedCompany()
+        {
+            try
+            {
+                _companyRepository.GetDeletedCompany();
+                return StatusCode(201);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return NotFound(ex.Message);
+            }
+             
+        }
 
         [HttpGet("{cnpj}")]
         public ActionResult<Company> GetByCnpj(string cnpj)

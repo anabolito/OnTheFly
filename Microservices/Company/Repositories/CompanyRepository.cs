@@ -38,12 +38,32 @@ namespace CompanyAPI.Repositories
 
             return company;
         }
-        public List<Company> GetReleasedCompany() =>
-    _releasedCompany.Find(company => true).ToList();
-        public List<Company> GetRestrictedCompany() =>
-    _restrictedCompany.Find(company => true).ToList();
-        public List<Company> GetDeletedCompany() =>
-    _deletedCompany.Find(company => true).ToList();
+        public List<Company> GetReleasedCompany()
+        {
+            return _releasedCompany.Find(company => true).ToList();
+        }
+
+        public List<Company> GetRestrictedCompany()
+        {
+            if (_restrictedCompany.Find(company => true).ToList().Count == 0)
+            {
+                Console.WriteLine("Não há companhias aéreas restritas.");
+                throw new BadHttpRequestException("Não há companhias aéreas restritas.");
+            }
+            return _restrictedCompany.Find(company => true).ToList();
+        }
+
+        public List<Company> GetDeletedCompany()
+        {
+            if (_deletedCompany.Find(company => true).ToList().Count == 0)
+            {
+                //Console.WriteLine("Não há companhias aéreas deletadas.");
+                throw new BadHttpRequestException("Não há companhias aéreas deletadas.");
+            }
+
+            return _deletedCompany.Find(company => true).ToList();
+        }
+
         public Company GetCompanyByCnpj(string cnpj) =>
             _releasedCompany.Find(company => company.CNPJ == cnpj).FirstOrDefault();
 
