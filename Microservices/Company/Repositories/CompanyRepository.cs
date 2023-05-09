@@ -21,7 +21,7 @@ namespace CompanyAPI.Repositories
             _restrictedCompany = database.GetCollection<Company>(settings.RestrictedCompaniesCollectionName);
             _releasedCompany = database.GetCollection<Company>(settings.ReleasedCompaniesCollectionName);
         }
-        
+
         public Company CreateCompany(Company company)
         {
 
@@ -30,18 +30,10 @@ namespace CompanyAPI.Repositories
                 Console.WriteLine("CNPJ Inválido!");
                 throw new BadHttpRequestException("CNPJ Inválido!");
             }
-            
-            _company.InsertOne(company);
 
-            if(company.Status == true)
-            {
-                _releasedCompany.InsertOne(company);
-            }
-            else
-            {
-                _restrictedCompany.InsertOne(company);
-
-            }
+            _company.InsertOne(company);  // ver com a Si se posso dispensar
+            _releasedCompany.InsertOne(company);
+           
             return company;
         }
         public List<Company> GetCompany() =>
@@ -52,6 +44,7 @@ namespace CompanyAPI.Repositories
     _releasedCompany.Find(company => true).ToList();
         public Company GetCompanyByCnpj(string cnpj) =>
             _company.Find(company => company.CNPJ == cnpj).FirstOrDefault();
+
         public void UpdateCompany(string cnpj, Company company)
         {
             Company companyAux = new();
@@ -59,17 +52,25 @@ namespace CompanyAPI.Repositories
             var status = companyAux.Status;
 
             _company.ReplaceOne(a => a.CNPJ == cnpj, company);
-           
-            if(status == true && company.Status == false)
+        }
+
+        public bool UpdateRestrictionCompany(string cnpj) ///////////////// não está funcionandoooo AAAAAA
+        {
+            var companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
+            if (companyAux == null)
             {
-                _releasedCompany.DeleteOne(a => a.CNPJ == cnpj);
-                _restrictedCompany.InsertOne(company);
+                companyAux = _company.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
+                _restrictedCompany.DeleteOne(companyAux => companyAux.CNPJ == cnpj);
+                _releasedCompany.InsertOne(companyAux);
             }
-            if (status == false && company.Status == true)
+
+           else
             {
-                _restrictedCompany.DeleteOne(a => a.CNPJ == cnpj);
-                _releasedCompany.InsertOne(company);
+                companyAux = _company.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
+                _releasedCompany.DeleteOne(companyAux => companyAux.CNPJ == cnpj);
+                _restrictedCompany.InsertOne(companyAux);
             }
+                return true;
         }
         public void DeleteCompany(string cnpj) => _company.DeleteOne(a => a.CNPJ == cnpj);
         public bool CnpjValidation(string cnpj)
@@ -117,6 +118,6 @@ namespace CompanyAPI.Repositories
             return cnpj.EndsWith(digito);
 
         }
-    
+
     }
 }
