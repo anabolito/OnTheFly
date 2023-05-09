@@ -49,6 +49,7 @@ namespace SaleAPI.Repository
         #region Post
         public async Task<ActionResult> PostSalesAsync([FromBody] Sale sale)
         {
+
             using (var connection = _factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())
