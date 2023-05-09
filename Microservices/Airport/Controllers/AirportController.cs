@@ -1,4 +1,5 @@
-﻿using AirportAPI.Models;
+﻿
+using AirportAPI.Models;
 using AirportAPI.Serivces;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace AirportAPI.Controllers
         }
 
         [HttpGet("{iata}", Name = "GetAirportIata")]
-        public ActionResult<Airport> Get(string iata)
+        public ActionResult<AirportPestanic> Get(string iata)
         {
             var airport = _airportServices.Get(iata);
 
@@ -27,7 +28,7 @@ namespace AirportAPI.Controllers
         }
         
         [HttpGet("/ByState/{state}", Name = "GetAirportState")]
-        public ActionResult<List<Airport>> GetByState(string state)
+        public ActionResult<List<AirportPestanic>> GetByState(string state)
         {
             var airport = _airportServices.GetByState(state);
 
@@ -37,7 +38,7 @@ namespace AirportAPI.Controllers
             return airport;
         }
         [HttpGet("/ByCity/{city_code}", Name = "GetAirportCityCode")]
-        public ActionResult<List<Airport>> GetByCityCode(string city_code)
+        public ActionResult<List<AirportPestanic>> GetByCityCode(string city_code)
         {
             var airport = _airportServices.GetByCityCode(city_code);
 
@@ -48,7 +49,7 @@ namespace AirportAPI.Controllers
         }
 
         [HttpGet("/ByCityName/{city}", Name = "GetAirportCityName")]
-        public ActionResult<List<Airport>> GetByCityName(string city)
+        public ActionResult<List<AirportPestanic>> GetByCityName(string city)
         {
             var airport = _airportServices.GetByCityName(city);
 
@@ -59,7 +60,7 @@ namespace AirportAPI.Controllers
         }
 
         [HttpGet("/ByIcao/{icao}", Name = "GetAirportIcao")]
-        public ActionResult<Airport> GetByIcao(string icao)
+        public ActionResult<AirportPestanic> GetByIcao(string icao)
         {
             var airport = _airportServices.GetByIcao(icao);
 

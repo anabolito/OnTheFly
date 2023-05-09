@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace AirportAPI.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Airport
+    public class AirportPestanic
     {
         //[BsonId]
         [JsonPropertyName("_id")]
