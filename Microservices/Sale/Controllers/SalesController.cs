@@ -36,12 +36,12 @@ namespace SaleAPI.Controllers
             else
                 return BadRequest();
         }
-            #endregion
+        #endregion
 
-            #region Put
-            [HttpPut("{iata}/{rab}/{date}")]
+        #region Put
+        [HttpPut("{iata}/{rab}/{date}")]
         public ActionResult<Sale> PutSale(string cpf, string date) =>
-            _salesRepository.PutSalesAsync(cpf, date).Result;
+        _salesRepository.PutSalesAsync(cpf, date).Result;
         #endregion
 
         #region Delete

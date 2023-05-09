@@ -17,7 +17,7 @@ namespace SaleAPI.Repository
         private readonly IMongoCollection<Sale> _reservedSales;
         private readonly IMongoCollection<Sale> _deletedSales;
         private readonly ConnectionFactory _factory;
-        private const string QUEUE_NAME = "sale";
+        private string QUEUE_NAME;
 
 
         public SaleRepository(ISaleSettings settings, ConnectionFactory factory)
@@ -50,19 +50,27 @@ namespace SaleAPI.Repository
         public async Task<bool> PostSalesAsync([FromBody] Sale sale)
         {
 
-            int date = CalcularIdade(sale.Passengers[0].DtBirth);
+            //int date = CalcularIdade(sale.Passengers[0].DtBirth);
 
-            if (date < 18)
-                return false;
+            //if (date < 18)
+            //    return false;
 
-            foreach (var item in sale.Passengers)
-            {
-                if (item.Status == false)
-                    return false;
-            }
+            //foreach (var item in sale.Passengers)
+            //{
+            //    if (item.Status == false)
+            //        return false;
+            //}
 
             if (sale.Passengers.GroupBy(x=>x).Any(p => p.Count() > 1))
                 return false;
+
+            if (sale.Sold == sale.Reserved )
+                return false;
+
+            if ((sale.Sold == true) && (sale.Reserved == false))
+                QUEUE_NAME = "sold";
+            else
+                QUEUE_NAME = "reserved";
 
             using (var connection = _factory.CreateConnection())
             {
