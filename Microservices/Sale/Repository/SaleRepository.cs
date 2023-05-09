@@ -5,7 +5,7 @@ using Models;
 using MongoDB.Driver;
 using RabbitMQ.Client;
 using SaleAPI.Utils;
-using Models.DTO;
+using Models.DTOs;
 using System.Globalization;
 using System.Web;
 
@@ -49,7 +49,6 @@ namespace SaleAPI.Repository
         #region Post
         public async Task<bool> PostSalesAsync([FromBody] Sale sale)
         {
-
 
             int date = CalcularIdade(sale.Passengers[0].DtBirth);
 
