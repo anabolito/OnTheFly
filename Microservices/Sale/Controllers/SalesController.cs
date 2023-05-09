@@ -29,11 +29,17 @@ namespace SaleAPI.Controllers
 
         #region Post
         [HttpPost]
-        public ActionResult<Sale> PostSale(Sale sale) => _salesRepository.PostSalesAsync(sale).Result;
-        #endregion
+        public ActionResult<Sale> PostSale(Sale sale)
+        {
+            if (_salesRepository.PostSalesAsync(sale).Result)
+                return Ok(sale);
+            else
+                return BadRequest();
+        }
+            #endregion
 
-        #region Put
-        [HttpPut("{iata}/{rab}/{date}")]
+            #region Put
+            [HttpPut("{iata}/{rab}/{date}")]
         public ActionResult<Sale> PutSale(string cpf, string date) =>
             _salesRepository.PutSalesAsync(cpf, date).Result;
         #endregion
