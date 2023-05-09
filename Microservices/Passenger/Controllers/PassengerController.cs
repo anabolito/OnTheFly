@@ -15,7 +15,6 @@ namespace PassengerAPI.Controllers
     [ApiController]
     public class PassengerController : ControllerBase
     {
-
         private readonly PassengerRepository _passengerService;
         private readonly PostOffice _postOffice;
 
@@ -34,6 +33,12 @@ namespace PassengerAPI.Controllers
         }
 
 
+        [HttpGet("Inactives")]
+        public ActionResult<List<Passenger>> GetDeletedOnes()
+        {
+            return Ok(_passengerService.GetDeletedOnes());
+        }
+
         // GET api/<PassengerController>/5
         [HttpGet("{_id}")]
         public ActionResult<Passenger> Get(string _id)
@@ -48,7 +53,6 @@ namespace PassengerAPI.Controllers
         public ActionResult Post(PassengerDTO passengeDTO, int number, string complement)
         {
             var dto = _postOffice.GetAddress(passengeDTO.CEP).Result;
-
             if (!ValidateDocument.ValidateCPF(passengeDTO.CPF, passengeDTO.CPF)) return BadRequest("CPF Inválido!");
 
             Address address = new()
@@ -76,7 +80,9 @@ namespace PassengerAPI.Controllers
                 return BadRequest(e.Message);
             }   
         }
-        [HttpPut("{id}/address")]
+
+
+        [HttpPut("{id}/Address")]
         public ActionResult<Passenger> UpdatePassengerAddress(string id, int number, string? complement, string cep)
         {
             var passenger = _passengerService.UpdatePassengerAddress(id, number, complement, cep);
@@ -85,94 +91,71 @@ namespace PassengerAPI.Controllers
             return Ok(passenger);
         }
 
-        // PUT api/<PassengerController>/5
-        //[HttpPut("{_id}")]
-        //public ActionResult Put(int number, string complement ,string _id, PassengerDTO passengerDTO)
-        //{
-        //    var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
+        [HttpPut("{id}/Name")]
+        public ActionResult<Passenger> UpdatePassengerName(string id, string name)
+        {
+            var passenger = _passengerService.UpdatePassengerName(id, name);
+            if (passenger == null) return NotFound();
 
-        //    Address address;
-        //    if (complement == null)
-        //    {
-        //         address = new()
-        //        {
-        //            Number = number,                    
+            return Ok(passenger);
+        }
 
-        //            Street = dto.Street,
-        //            Neighborhood = dto.Neighborhood,
-        //            City = dto.City,
-        //            State = dto.State,
-        //            ZipCode = dto.ZipCode,
-        //        };
-        //    }
-        //    else
-        //    {
-        //        address = new()
-        //        {
-        //            Number = number,
+        [HttpPut("{id}/Gen")]
+        public ActionResult<Passenger> UpdatePassengerGender(string id, char gen)
+        {
+            var passenger = _passengerService.UpdatePassengerGender(id, gen);
+            if (passenger == null) return NotFound();
 
-        //            Complement = complement,
+            return Ok(passenger);
+        }
 
-        //            Street = dto.Street,
-        //            Neighborhood = dto.Neighborhood,
-        //            City = dto.City,
-        //            State = dto.State,
-        //            ZipCode = dto.ZipCode,
-        //        };
-        //    }            
+        [HttpPut("{id}/Phone")]
+        public ActionResult<Passenger> UpdatePassengerPhone(string id, string phone)
+        {
+            var passenger = _passengerService.UpdatePassengerPhone(id, phone);
+            if (passenger == null) return NotFound();
 
-        //    Passenger passenger = new(passengerDTO, address);
-            
-        //    return Ok(passenger);
-        //}
+            return Ok(passenger);
+        }
 
-        //PUT api/<PassengerController>/5
-        //[HttpPut("{_id}")]
-        //public async ActionResult PutAddress(string _id, int number, string? complement, PassengerDTO passengerDTO)
-        //{
-        //    var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
-        //    var updatedPassenger = _passengerService.UpdateAddress(_id, number, complement, dto);
+        [HttpPut("{id}/BirthDate")]
+        public ActionResult<Passenger> UpdatePassengerBirthDate(string id, DateTime birth)
+        {
+            var passenger = _passengerService.UpdatePassengerBirthDate(id, birth);
+            if (passenger == null) return NotFound();
 
-        //    Address address;
-        //    if (complement == null)
-        //    {
-        //        address = new()
-        //        {
-        //            Number = number,
+            return Ok(passenger);
+        }
 
-        //            Street = dto.Street,
-        //            Neighborhood = dto.Neighborhood,
-        //            City = dto.City,
-        //            State = dto.State,
-        //            ZipCode = dto.ZipCode,
-        //        };
-                
-        //    }
-        //    else
-        //    {
-        //        address = new()
-        //        {
-        //            Number = number,
+        [HttpPut("{id}/RegisterDate")]
+        public ActionResult<Passenger> UpdatePassengerRegisterDate(string id, DateTime reg)
+        {
+            var passenger = _passengerService.UpdatePassengerRegisterDate(id, reg);
+            if (passenger == null) return NotFound();
 
-        //            Complement = complement,
+            return Ok(passenger);
+        }
 
-        //            Street = dto.Street,
-        //            Neighborhood = dto.Neighborhood,
-        //            City = dto.City,
-        //            State = dto.State,
-        //            ZipCode = dto.ZipCode,
-        //        };
-        //    }            
+        [HttpPut("{id}/Status")]
+        public ActionResult<Passenger> UpdatePassengerStatus(string id, bool stat)
+        {
+            var passenger = _passengerService.UpdatePassengerStatus(id, stat);
+            if (passenger == null) return NotFound();
 
-        //    if (updatedPassenger == null) return NotFound();
-        //    return Ok(updatedPassenger);
-        //}
+            return Ok(passenger);
+        }
+
+        [HttpPut("{id}/Reactivate")]
+        public void ReactivatePassenger(string id)
+        {
+            _passengerService.ReativatePassenger(id);
+        }
 
         // DELETE api/<PassengerController>/5
-        [HttpDelete("{DeleteCPF}")]
-        public void Delete(string cpf)
+        [HttpDelete("{id}/Delete")]
+        public void Delete(string id)
         {
-            _passengerService.Delete(cpf);
+            _passengerService.Delete(id);
         }
     }
 }

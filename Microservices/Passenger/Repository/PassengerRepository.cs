@@ -3,6 +3,7 @@ using Models;
 using MongoDB.Driver;
 using PassengerAPI.DTO;
 using PassengerAPI.AddressService;
+using System.Security.Cryptography;
 
 namespace PassengerAPI.Repositories
 {
@@ -64,6 +65,12 @@ namespace PassengerAPI.Repositories
             return restrictedOnes;
         }
 
+        public List<Passenger> GetDeletedOnes()
+        {
+            var deletedOnes = _unactivatedPassenger.Find(u => true).ToList();
+            return deletedOnes;
+        }
+
         public Passenger GetByCPF(string _id)
         {
             var customPassenger = _passenger.Find(passenger => passenger.CPF == _id).FirstOrDefault();
@@ -74,7 +81,8 @@ namespace PassengerAPI.Repositories
             else
                 return restrictedPassenger;
 
-        }
+        }        
+
         #endregion
         #region[U]
         public Passenger UpdatePassengerAddress(string _id, int number, string? complement, string cep)
@@ -118,84 +126,201 @@ namespace PassengerAPI.Repositories
             return null;
         }
 
-        //public Passenger UpdateAddress(string _id, int number, string complement, AddressDTO dto)
-        //{
+        public Passenger UpdatePassengerName(string _id, string name)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
-        //    if (string.IsNullOrEmpty(_id)) return null;
+            if (passenger != null)
+            {
+                passenger.Name = name;
 
+                _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return passenger;
+            }
+            else if (restrictedPassenger != null)
+            {
 
-        //    if (passenger != null)
-        //    {
-        //        passenger.Address.ZipCode = newCEP;
-        //        _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                passenger.Name = name;
 
-        //        return passenger;
-        //    }
-        //    else if (restrictedPassenger != null)
-        //    {
-        //        restrictedPassenger.Address.ZipCode = newCEP;
-        //        _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return restrictedPassenger;
+            }
+            return null;
+        }
 
-        //        return restrictedPassenger;
-        //    }
-        //    else return null;
-        //}
+        public Passenger UpdatePassengerGender(string _id, char gen)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
+            if (passenger != null)
+            {
+                passenger.Gender = gen;
 
-        //public Passenger UpdateAddress(string _id, string cep, int number , string complement)
-        //{
-        //    var currentPassenger = _passenger.Find(p => p.CPF == _id).FirstOrDefault();            
-        //    var restrictedPassenger = _restrictedPassenger.Find(p => p.CPF == _id).FirstOrDefault();
-        //    var unactivatedPassenger = _unactivatedPassenger.Find(p => p.CPF == _id).FirstOrDefault();
+                _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return passenger;
+            }
+            else if (restrictedPassenger != null)
+            {
 
-        //    if (currentPassenger != null)
-        //    {  
-        //        //Colocando na colecao de restritos
-        //        if ((bool)!passenger.Status && (bool)currentPassenger.Status)
-        //        {
+                passenger.Gender = gen;
 
-        //            _restrictedPassenger.InsertOne(currentPassenger);
-        //            _passenger.DeleteOne(p => p.CPF == _id);
-        //            return passenger;
-        //        }                           
-        //        else
-        //        {
-        //            _passenger.ReplaceOne(p => p.CPF == _id, passenger);
-        //            return passenger;
-        //        }                
-        //    }            
-        //    if(restrictedPassenger != null)
-        //    {
-        //        //colocando na coleção comum
-        //        if ((bool)passenger.Status && (bool)!restrictedPassenger.Status)
-        //        {
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return restrictedPassenger;
+            }
+            return null;
+        }
 
-        //            _passenger.InsertOne(passenger);
-        //            _restrictedPassenger.DeleteOne(r => r.CPF == _id);
-        //        }
-        //        else 
-        //        { 
-        //            _passenger.ReplaceOne(p => p.CPF == _id, passenger);
-        //            return passenger;
-        //        }
+        public Passenger UpdatePassengerPhone(string _id, string phone)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
-        //    }
-        //    return passenger;
+            if (passenger != null)
+            {
+                passenger.Phone = phone;
 
-        //}
+                _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return passenger;
+            }
+            else if (restrictedPassenger != null)
+            {
+
+                passenger.Phone = phone;
+
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return restrictedPassenger;
+            }
+            return null;
+        }
+
+        public Passenger UpdatePassengerBirthDate(string _id, DateTime birthdate)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+
+            if (passenger != null)
+            {
+                passenger.DtBirth = birthdate;
+
+                _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return passenger;
+            }
+            else if (restrictedPassenger != null)
+            {
+
+                passenger.DtBirth = birthdate;
+
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return restrictedPassenger;
+            }
+            return null;
+        }
+
+        public Passenger UpdatePassengerRegisterDate(string _id, DateTime registerDate)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+
+            if (passenger != null)
+            {
+                passenger.DtRegistry = registerDate;
+
+                _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return passenger;
+            }
+            else if (restrictedPassenger != null)
+            {
+
+                passenger.DtRegistry = registerDate;
+
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return restrictedPassenger;
+            }
+            return null;
+        }
+
+        public Passenger UpdatePassengerStatus(string _id, bool status)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+
+            if (passenger != null)
+            {
+                if (status == false && passenger.Status == true)
+                {
+                    passenger.Status = status;
+                    _restrictedPassenger.InsertOne(passenger);
+                    _passenger.DeleteOne(p => p.CPF == _id);
+                }
+                if (status == true && passenger.Status == false)
+                {
+                    passenger.Status = status;
+                    _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                }
+                return passenger;
+            }
+
+            if (restrictedPassenger != null)
+            {
+                if (status == true && restrictedPassenger.Status == false)
+                {
+                    restrictedPassenger.Status = status;
+                    _passenger.InsertOne(restrictedPassenger);
+                    _restrictedPassenger.DeleteOne(p => p.CPF == _id);
+                }
+                if (status == false && restrictedPassenger.Status == true)
+                {
+                    restrictedPassenger.Status = status;
+                    _restrictedPassenger.ReplaceOne(p => p.CPF == _id, restrictedPassenger);
+                }
+                return restrictedPassenger;
+            }
+            return null;
+        }
         #endregion
         #region[D]
-        public async Task<Passenger> Delete(string cpf)
+        public async Task<Passenger> Delete(string _id)
         {
-            var passengerToDelete = await _passenger.Find<Passenger>(passenger => passenger.CPF == cpf).FirstOrDefaultAsync();
-            if (passengerToDelete == null) return new Passenger();
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
-            await _unactivatedPassenger.InsertOneAsync(passengerToDelete);
-            await _passenger.DeleteOneAsync(p => p.CPF == cpf);
-            return passengerToDelete;
+            if(passenger != null)
+            {
+                await _unactivatedPassenger.InsertOneAsync(passenger);
+                await _passenger.DeleteOneAsync(p => p.CPF == _id);
+                return passenger;
+            }
+
+            if(restrictedPassenger != null)
+            {
+                await _unactivatedPassenger.InsertOneAsync(passenger);
+                await _restrictedPassenger.DeleteOneAsync(p => p.CPF == _id);
+                return restrictedPassenger;
+            } 
+            return new Passenger();
         }
         #endregion
 
+        public async Task<Passenger> ReativatePassenger(string _id)
+        {
+            var unactivated = _unactivatedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+
+            if(unactivated != null && unactivated.Status == true)
+            {
+                await _passenger.InsertOneAsync(unactivated);
+                await _unactivatedPassenger.DeleteOneAsync(p => p.CPF == _id);
+                return unactivated;
+            }
+            if (unactivated != null && unactivated.Status == false)
+            {
+                await _restrictedPassenger.InsertOneAsync(unactivated);
+                await _unactivatedPassenger.DeleteOneAsync(p => p.CPF == _id);
+                return unactivated;
+            }
+            return new Passenger();
+        }
         private int CalculateAge(DateTime bd)
         {
             var today = DateTime.Today;
