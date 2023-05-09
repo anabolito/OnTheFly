@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExternalServices\Services\Services.csproj" />
+    <ProjectReference Include="..\Microservices\Company\CompanyAPI.csproj" />
   </ItemGroup>
 
 </Project>
