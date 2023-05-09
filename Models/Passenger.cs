@@ -42,14 +42,13 @@ namespace Models
         {
             CPF = dto.CPF;
             Name = dto.Name;
-            Gender = dto.Gender;
+            Gender = char.ToUpper(dto.Gender);
             Phone = dto.Phone;
             DtBirth = dto.DtBirth;
             DtRegistry = dto.DtRegistry;
             Status = dto.Status;
             Address = address;
         }
-
         #endregion
     }
 }

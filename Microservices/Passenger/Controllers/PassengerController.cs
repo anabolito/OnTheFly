@@ -22,13 +22,13 @@ namespace PassengerAPI.Controllers
             _postOffice = postOffice;
         }
         
-        [HttpGet("Passengers")]
+        [HttpGet("GetAllActives")]
         public ActionResult<List<Passenger>> Get()
         {
             return Ok(_passengerService.Get());
         }
 
-        [HttpGet("UndeAgeOnes")]
+        [HttpGet("UnderAgeOnes")]
         public ActionResult<List<Passenger>> GetAllMinors()
         {
             var minors = _passengerService.GetAllMinors();
@@ -40,7 +40,13 @@ namespace PassengerAPI.Controllers
         {
             return Ok(_passengerService.GetDeletedOnes());
         }
-        
+
+        [HttpGet("RestrictedOnes")]
+        public ActionResult<List<Passenger>> GetRestrictedOnes()
+        {
+            return Ok(_passengerService.GetRestrictedOnes());
+        }
+
         [HttpGet("{_id}")]
         public ActionResult<Passenger> GetByCPF(string _id)
         {
@@ -49,7 +55,7 @@ namespace PassengerAPI.Controllers
             return Ok(passenger);
         }
 
-        [HttpPost]
+        [HttpPost("Create")]
         public ActionResult Post(PassengerDTO passengeDTO, int number, string complement)
         {
             var dto = _postOffice.GetAddress(passengeDTO.CEP).Result;
@@ -145,13 +151,31 @@ namespace PassengerAPI.Controllers
             return Ok(passenger);
         }
 
+        [HttpPut("{id}/SetRestrict")]
+        public ActionResult<Passenger> SetPassengerAsRestricted(string id)
+        {
+            var passenger = _passengerService.SetPassengerAsRestricted(id);
+            if (passenger == null) return NotFound();
+
+            return Ok(passenger);
+        }
+
+        [HttpPut("{id}/SetUnrestrict")]
+        public ActionResult<Passenger> SetPassengerAsUnrestricted(string id)
+        {
+            var passenger = _passengerService.SetPassengerAsUnrestricted(id);
+            if (passenger == null) return NotFound();
+
+            return Ok(passenger);
+        }
+
         [HttpPut("{id}/Reactivate")]
         public void ReactivatePassenger(string id)
         {
             _passengerService.ReativatePassenger(id);
         }
         
-        [HttpDelete("{id}/Delete")]
+        [HttpDelete("{id}/Desactivate")]
         public void Delete(string id)
         {
             _passengerService.Delete(id);

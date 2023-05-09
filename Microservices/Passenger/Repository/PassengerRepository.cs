@@ -28,10 +28,7 @@ namespace PassengerAPI.Repositories
         #region[C]
         public Passenger Create(Passenger passenger)
         {
-            if (!(bool)passenger.Status)
-                _restrictedPassenger.InsertOne(passenger);
-            else
-                _passenger.InsertOne(passenger);
+            _passenger.InsertOne(passenger);
 
             return passenger;
         }
@@ -88,7 +85,7 @@ namespace PassengerAPI.Repositories
             else
                 return restrictedPassenger;
 
-        }        
+        }
 
         #endregion
         #region[U]
@@ -262,37 +259,46 @@ namespace PassengerAPI.Repositories
 
             if (passenger != null)
             {
-                if (status == false && passenger.Status == true)
-                {
-                    passenger.Status = status;
-                    _restrictedPassenger.InsertOne(passenger);
-                    _passenger.DeleteOne(p => p.CPF == _id);
-                }
-                if (status == true && passenger.Status == false)
-                {
-                    passenger.Status = status;
-                    _passenger.ReplaceOne(p => p.CPF == _id, passenger);
-                }
+                if (status == true) status = false;
+                if (status == false) status = true;
+
                 return passenger;
             }
 
             if (restrictedPassenger != null)
             {
-                if (status == true && restrictedPassenger.Status == false)
-                {
-                    restrictedPassenger.Status = status;
-                    _passenger.InsertOne(restrictedPassenger);
-                    _restrictedPassenger.DeleteOne(p => p.CPF == _id);
-                }
-                if (status == false && restrictedPassenger.Status == true)
-                {
-                    restrictedPassenger.Status = status;
-                    _restrictedPassenger.ReplaceOne(p => p.CPF == _id, restrictedPassenger);
-                }
+                if (status == true) status = false;
+                if (status == false) status = true;
+
                 return restrictedPassenger;
             }
             return null;
         }
+
+        public Passenger SetPassengerAsRestricted(string _id)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            if (passenger != null)
+            {
+                _restrictedPassenger.InsertOne(passenger);
+                _passenger.DeleteOne(x => x.CPF == _id);
+                return passenger;
+            }
+            return null;
+        }
+
+        public Passenger SetPassengerAsUnrestricted(string _id)
+        {
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            if(restrictedPassenger != null)
+            {
+                _passenger.InsertOne(restrictedPassenger);
+                _restrictedPassenger.DeleteOne(x => x.CPF == _id);
+                return restrictedPassenger;
+            }
+            return null;
+        }
+
         #endregion
         #region[D]
         public async Task<Passenger> Delete(string _id)
@@ -300,19 +306,19 @@ namespace PassengerAPI.Repositories
             var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
-            if(passenger != null)
+            if (passenger != null)
             {
                 await _unactivatedPassenger.InsertOneAsync(passenger);
                 await _passenger.DeleteOneAsync(p => p.CPF == _id);
                 return passenger;
             }
 
-            if(restrictedPassenger != null)
+            if (restrictedPassenger != null)
             {
                 await _unactivatedPassenger.InsertOneAsync(passenger);
                 await _restrictedPassenger.DeleteOneAsync(p => p.CPF == _id);
                 return restrictedPassenger;
-            } 
+            }
             return new Passenger();
         }
         #endregion
@@ -321,7 +327,7 @@ namespace PassengerAPI.Repositories
         {
             var unactivated = _unactivatedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
-            if(unactivated != null && unactivated.Status == true)
+            if (unactivated != null && unactivated.Status == true)
             {
                 await _passenger.InsertOneAsync(unactivated);
                 await _unactivatedPassenger.DeleteOneAsync(p => p.CPF == _id);
@@ -334,7 +340,7 @@ namespace PassengerAPI.Repositories
                 return unactivated;
             }
             return new Passenger();
-        }     
+        }
         private int CalculateAge(DateTime bd)
         {
             var today = DateTime.Today;
