@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
-using Models.DTO;
+using Models.DTOs;
 using SaleAPI.Repository;
 
 namespace SaleAPI.Controllers

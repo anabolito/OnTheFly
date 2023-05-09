@@ -1,6 +1,7 @@
 ﻿using AircraftAPI.Config;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Services;
 
@@ -27,6 +28,14 @@ namespace AircraftAPI.Services
         public List<Aircraft> Get()
         {
             return _aircraft.Find(c => true).ToList();
+        }
+
+        public int GetCapacity(string id)
+        {
+            Aircraft a = new Aircraft();
+            a = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
+
+            return a.Capacity;
         }
 
         public Aircraft Get(string id)
