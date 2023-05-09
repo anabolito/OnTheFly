@@ -55,14 +55,12 @@ namespace CompanyAPI.Controller
             }
         }
 
-        [HttpGet("Companies")]
-        public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
+        [HttpGet("ReleasedCompany")]
+        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
 
         [HttpGet("RestrictedCompany")]
         public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetRestrictedCompany();
 
-        [HttpGet("ReleasedCompany")]
-        public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
         
         [HttpGet("DeletedCompany")]
         public ActionResult<List<Company>> GetDeletedCompany() => _companyRepository.GetDeletedCompany();
