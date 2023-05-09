@@ -50,13 +50,13 @@ namespace CompanyAPI.Controller
             }
         }
 
-        [HttpGet("COMPANHIAS AÉREAS")]
+        [HttpGet("Companies")]
         public ActionResult<List<Company>> GetCompany() => _companyRepository.GetCompany();
 
-        [HttpGet("COMPANHIAS AÉREAS RESTRITAS")]
+        [HttpGet("RestrictedCompany")]
         public ActionResult<List<Company>> GetRestrictedCompany() => _companyRepository.GetRestrictedCompany();
 
-        [HttpGet("COMPANHIAS AÉREAS LIBERADAS")]
+        [HttpGet("ReleasedCompany")]
         public ActionResult<List<Company>> GetReleasedCompany() => _companyRepository.GetReleasedCompany();
 
         [HttpGet("{cnpj}")]
@@ -68,7 +68,7 @@ namespace CompanyAPI.Controller
             return company;
         }
 
-        [HttpPut("{cnpj} Modificar Nome Fantasia")]
+        [HttpPut("{cnpj}NameOptUpdate")]
         public ActionResult<Company> UpdateNameOptCompany(string cnpj, string nameOpt)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
@@ -81,7 +81,7 @@ namespace CompanyAPI.Controller
             return StatusCode(202);
         }
 
-        [HttpPut("{cnpj} Modificar Status da Companhia Aérea")]
+        [HttpPut("{cnpj}StatusUpdate")]
         public ActionResult<Company> UpdateStatusCompany(string cnpj, bool status)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
@@ -94,18 +94,7 @@ namespace CompanyAPI.Controller
             return StatusCode(202);
         }
 
-        [HttpPut("{cnpj} Restriction")]
-        public ActionResult<Company> UpdateRestrictionCompany(string cnpj)
-        {
-            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
-            if (companyAux == null) return NotFound("Companhia aérea não encontrada");
-
-            _companyRepository.UpdateRestrictionCompany(cnpj);
-
-            return StatusCode(202);
-        }
-
-        [HttpPut("{cnpj} Modificar Endereço da Companhia Aérea")]
+        [HttpPut("{cnpj}AddressUpdate")]
         public ActionResult<Company> UpdateAddressCompany(string cnpj, Address address)
         {
             var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
@@ -125,6 +114,18 @@ namespace CompanyAPI.Controller
 
             return StatusCode(202);
         }
+       
+        [HttpPut("{cnpj}Restriction")]
+        public ActionResult<Company> UpdateRestrictionCompany(string cnpj)
+        {
+            var companyAux = _companyRepository.GetCompanyByCnpj(cnpj);
+            if (companyAux == null) return NotFound("Companhia aérea não encontrada");
+
+            _companyRepository.UpdateRestrictionCompany(cnpj);
+
+            return StatusCode(202);
+        }
+
 
         [HttpDelete]
         public ActionResult Delete(string cnpj)

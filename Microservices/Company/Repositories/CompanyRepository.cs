@@ -54,7 +54,7 @@ namespace CompanyAPI.Repositories
             _company.ReplaceOne(a => a.CNPJ == cnpj, company);
         }
 
-        public bool UpdateRestrictionCompany(string cnpj) ///////////////// não está funcionandoooo AAAAAA
+        public bool UpdateRestrictionCompany(string cnpj) 
         {
             var companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
             if (companyAux == null)
