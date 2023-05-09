@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using SaleAPI.Repository;
 using SaleAPI.Utils;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.Configure<SaleSettings>(builder.Configuration.GetSection("Sales
 builder.Services.AddSingleton<ISaleSettings>(s => s.GetRequiredService<IOptions<SaleSettings>>().Value);
 builder.Services.AddSingleton<SaleRepository>();
 builder.Services.AddSingleton<ConnectionFactory>();
+builder.Services.AddSingleton<FlightService>();
+builder.Services.AddSingleton<PassengerService>();
 
 var app = builder.Build();
 

@@ -3,6 +3,7 @@ using System.Web;
 using FlightAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.DTOs;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
@@ -68,6 +69,9 @@ namespace FlightAPI.Repositories
         #region Post
         public async Task<Flight> PostFlightAsync(Flight flight)
         {
+
+            //Flight flight = new(flightDTO);
+
             var data = DateTime.ParseExact(flight.DtDeparture.ToString(), "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
             flight.DtDeparture = data;

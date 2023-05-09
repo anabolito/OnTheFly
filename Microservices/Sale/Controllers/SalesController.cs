@@ -20,8 +20,8 @@ namespace SaleAPI.Controllers
         #endregion
 
         #region Get
-        [HttpGet]
-        public ActionResult<List<Sale>> GetSales() => _salesRepository.GetSalesAsync().Result;
+        //[HttpGet]
+        //public ActionResult<List<Sale>> GetSales() => _salesRepository.GetSalesAsync().Result;
 
         //[HttpGet("{departure}")]
         //public ActionResult<List<Sale>> GetFlight() => _salesRepository.GetSalesAsync().Result;
@@ -29,7 +29,7 @@ namespace SaleAPI.Controllers
 
         #region Post
         [HttpPost]
-        public ActionResult<Sale> PostSale(Sale sale)
+        public ActionResult<Sale> PostSale(SaleDTO sale)
         {
             if (_salesRepository.PostSalesAsync(sale).Result)
                 return Ok(sale);

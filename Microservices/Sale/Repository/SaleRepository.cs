@@ -8,6 +8,7 @@ using SaleAPI.Utils;
 using Models.DTOs;
 using System.Globalization;
 using System.Web;
+using Services;
 
 namespace SaleAPI.Repository
 {
@@ -17,10 +18,12 @@ namespace SaleAPI.Repository
         private readonly IMongoCollection<Sale> _reservedSales;
         private readonly IMongoCollection<Sale> _deletedSales;
         private readonly ConnectionFactory _factory;
+        private readonly FlightService _flightService;
+        private readonly PassengerService _passengerService;
         private string QUEUE_NAME;
 
 
-        public SaleRepository(ISaleSettings settings, ConnectionFactory factory)
+        public SaleRepository(ISaleSettings settings, ConnectionFactory factory, FlightService flightService, PassengerService passengerService)
         {
             var client = new MongoClient(settings.ConnectionString);
             var flightDatabase = client.GetDatabase(settings.DataBaseName);
@@ -29,6 +32,8 @@ namespace SaleAPI.Repository
             _reservedSales = flightDatabase.GetCollection<Sale>(settings.ReservedSalesCollectionName);
             _deletedSales = flightDatabase.GetCollection<Sale>(settings.DeletedSalesCollectionName);
             _factory = factory;
+            _flightService = flightService;
+            _passengerService = passengerService;
         }
 
 
@@ -47,8 +52,21 @@ namespace SaleAPI.Repository
         #endregion
 
         #region Post
-        public async Task<bool> PostSalesAsync([FromBody] Sale sale)
+        public async Task<bool> PostSalesAsync([FromBody] SaleDTO saleDTO)
         {
+
+            Flight flight = _flightService.Get(saleDTO.IataFlight, saleDTO.RabFlight, saleDTO.DtDepartureFlight).Result;
+
+            List<Passenger> passengerList = new();
+            saleDTO.Cpf.ForEach(async c =>  passengerList.Add(_passengerService.GetByCPF(c).Result));
+
+            Sale sale = new()
+            {
+                Flight = flight,
+                Passengers = passengerList,
+                Reserved = saleDTO.Reserved,
+                Sold = saleDTO.Sold
+            };
 
             //int date = CalcularIdade(sale.Passengers[0].DtBirth);
 
@@ -61,10 +79,10 @@ namespace SaleAPI.Repository
             //        return false;
             //}
 
-            if (sale.Passengers.GroupBy(x=>x).Any(p => p.Count() > 1))
+            if (sale.Passengers.GroupBy(x => x).Any(p => p.Count() > 1))
                 return false;
 
-            if (sale.Sold == sale.Reserved )
+            if (sale.Sold == sale.Reserved)
                 return false;
 
             if ((sale.Sold == true) && (sale.Reserved == false))
