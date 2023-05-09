@@ -45,11 +45,29 @@ namespace Services
             }
         }
 
+        public async Task<Flight> Get(string iata, string rab, string date)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url + "/" + iata + "/" + rab + "/" + date);
+                response.EnsureSuccessStatusCode();
+                string flight = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Flight>(flight);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
         public async Task<Flight> Post(FlightDTO flightDTO)
         {
             var destiny = new AirportService().GetIata(flightDTO.IataDestiny).Result;
             var departure = new AirportService().GetIata(flightDTO.IataDparture).Result;
             var plane = new AircraftService().GetById(flightDTO.RabPlane).Result;
+
+            if ((destiny == null) && (departure == null) && (plane == null))
+                return null;
 
             Flight flight = new Flight()
             {

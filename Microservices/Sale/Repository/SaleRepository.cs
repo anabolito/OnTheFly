@@ -5,7 +5,7 @@ using Models;
 using MongoDB.Driver;
 using RabbitMQ.Client;
 using SaleAPI.Utils;
-using Models.DTO;
+using Models.DTOs;
 using System.Globalization;
 using System.Web;
 
@@ -47,8 +47,23 @@ namespace SaleAPI.Repository
         #endregion
 
         #region Post
-        public async Task<ActionResult> PostSalesAsync([FromBody] Sale sale)
+        public async Task<bool> PostSalesAsync([FromBody] Sale sale)
         {
+
+            int date = CalcularIdade(sale.Passengers[0].DtBirth);
+
+            if (date < 18)
+                return false;
+
+            foreach (var item in sale.Passengers)
+            {
+                if (item.Status == false)
+                    return false;
+            }
+
+            if (sale.Passengers.GroupBy(x=>x).Any(p => p.Count() > 1))
+                return false;
+
             using (var connection = _factory.CreateConnection())
             {
                 using (var channel = connection.CreateModel())
@@ -73,7 +88,7 @@ namespace SaleAPI.Repository
                         );
                 }
             }
-            return new AcceptedResult();
+            return true;
         }
         #endregion
 
@@ -142,5 +157,17 @@ namespace SaleAPI.Repository
             return new OkResult();
         }
         #endregion
+
+        private int CalcularIdade(DateTime dataNascimento)
+        {
+            int idade = DateTime.Today.Year - dataNascimento.Year;
+
+            if (DateTime.Today.Month < dataNascimento.Month || (DateTime.Today.Month == dataNascimento.Month && DateTime.Today.Day < dataNascimento.Day))
+            {
+                idade--;
+            }
+
+            return idade;
+        }
     }
 }

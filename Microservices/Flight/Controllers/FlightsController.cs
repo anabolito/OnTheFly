@@ -37,6 +37,16 @@ namespace FlightAPI.Controllers
             else
                 return NoContent();
         }
+
+        [HttpGet("{iata}/{rab}/{date}")]
+        public ActionResult<List<Flight>> GetFlight(string iata, string rab, string date)
+        {
+            Flight list = _flightRepository.GetFlightAsync(iata, rab, date).Result;
+            if (list != null)
+                return Ok(list);
+            else
+                return NoContent();
+        }
         #endregion
 
         #region Post
