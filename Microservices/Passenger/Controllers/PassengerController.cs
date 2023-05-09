@@ -96,6 +96,15 @@ namespace PassengerAPI.Controllers
             return Ok(passenger);
         }
 
+        [HttpPut("{id}/Street")]
+        public ActionResult<Passenger> UpdatePassengerAddressStreet(string id, string streetName)
+        {
+            var passenger = _passengerService.UpdatePassengerAddressStreet(id, streetName);
+            if (passenger == null) return NotFound();
+
+            return Ok(passenger);
+        }
+
         [HttpPut("{id}/Name")]
         public ActionResult<Passenger> UpdatePassengerName(string id, string name)
         {

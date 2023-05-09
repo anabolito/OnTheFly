@@ -6,6 +6,7 @@ using PassengerAPI.AddressService;
 using System.Security.Cryptography;
 using System.Web;
 using System.Globalization;
+using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 
 namespace PassengerAPI.Repositories
 {
@@ -130,6 +131,51 @@ namespace PassengerAPI.Repositories
             return null;
         }
 
+        public Passenger UpdatePassengerAddressStreet(string _id, string streetName)
+        {
+            var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();           
+
+            
+            if (passenger != null)
+            {
+                var currentAddress = passenger.Address;
+
+                if (currentAddress != null)
+                {                    
+                    currentAddress.Street = streetName;
+                }
+                currentAddress.Street = streetName;
+                passenger.Address = currentAddress;
+                
+                _passenger.ReplaceOne(p => p.CPF == _id, passenger);
+                return passenger;
+            }
+            else if (restrictedPassenger != null)
+            {
+                var currentAddress = passenger.Address;
+
+                if (currentAddress != null)
+                {
+                    currentAddress.Street = streetName;
+                }
+                currentAddress.Street = streetName;
+                restrictedPassenger.Address = currentAddress;
+                //{                    
+                //    Street = streetName,
+                //    Complement = restrictedPassenger.Address.Complement,
+                //    Neighborhood = restrictedPassenger.Address.Neighborhood,
+                //    City = restrictedPassenger.Address.City,
+                //    State = restrictedPassenger.Address.State,
+                //    ZipCode = restrictedPassenger.Address.ZipCode
+                //};
+
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, restrictedPassenger);
+                return restrictedPassenger;
+            }
+            return null;
+        }
+
         public Passenger UpdatePassengerName(string _id, string name)
         {
             var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
@@ -144,7 +190,6 @@ namespace PassengerAPI.Repositories
             }
             else if (restrictedPassenger != null)
             {
-
                 passenger.Name = name;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
@@ -167,7 +212,6 @@ namespace PassengerAPI.Repositories
             }
             else if (restrictedPassenger != null)
             {
-
                 passenger.Gender = gen;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
@@ -190,7 +234,6 @@ namespace PassengerAPI.Repositories
             }
             else if (restrictedPassenger != null)
             {
-
                 passenger.Phone = phone;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
@@ -216,7 +259,6 @@ namespace PassengerAPI.Repositories
             }
             else if (restrictedPassenger != null)
             {
-
                 passenger.DtBirth = date;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
@@ -230,7 +272,6 @@ namespace PassengerAPI.Repositories
             var decodedDate = HttpUtility.UrlDecode(registerDate);
             var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-
             var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
@@ -243,7 +284,6 @@ namespace PassengerAPI.Repositories
             }
             else if (restrictedPassenger != null)
             {
-
                 passenger.DtRegistry = date;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);

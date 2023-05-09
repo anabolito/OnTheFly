@@ -152,6 +152,21 @@ namespace Services
             }
         }
 
+        [HttpPut("{id}/Street")]
+        public async Task<Passenger> UpdatePassengerAddressStreet(string id, string streetName)   {
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Street",streetName);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Passenger>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+
         [HttpPut("{id}/{Name}")]
         public async Task<Passenger> UpdatePassengerName(string id, string name)
         {
