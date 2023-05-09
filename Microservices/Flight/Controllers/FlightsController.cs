@@ -39,11 +39,11 @@ namespace FlightAPI.Controllers
         }
 
         [HttpGet("{iata}/{rab}/{date}")]
-        public ActionResult<List<Flight>> GetFlight(string iata, string rab, string date)
+        public ActionResult<Flight> GetFlight(string iata, string rab, string date)
         {
-            Flight list = _flightRepository.GetFlightAsync(iata, rab, date).Result;
-            if (list != null)
-                return Ok(list);
+            Flight flight = _flightRepository.GetFlightAsync(iata, rab, date).Result;
+            if (flight != null)
+                return Ok(flight);
             else
                 return NoContent();
         }
