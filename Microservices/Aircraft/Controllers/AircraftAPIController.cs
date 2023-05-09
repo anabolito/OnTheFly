@@ -19,7 +19,7 @@ namespace AircraftAPI.Controllers
         [HttpGet]
         public ActionResult<List<Aircraft>> Get() => _aircraftAPIService.Get();
 
-        [HttpGet("{id}", Name = "GetCapacity")]
+        [HttpGet("{id}/Capacity", Name = "GetCapacity")]
         public int GetCapacity(string id) => _aircraftAPIService.GetCapacity(id);
 
 

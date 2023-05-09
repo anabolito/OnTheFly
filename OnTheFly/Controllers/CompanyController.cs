@@ -20,7 +20,7 @@ namespace OnTheFly.Controllers
             _postOfficeService = postOfficeService;
         }
 
-        [HttpPost]
+        [HttpPost("Company", Name = "Company")]
         public ActionResult PostCompany(Company company)
         {
 
@@ -48,25 +48,25 @@ namespace OnTheFly.Controllers
             }
         }
 
-        [HttpGet("COMPANHIAS AÉREAS")]
-        public ActionResult<List<Company>> GetCompany() => _companyService.Get().Result;
+        //[HttpGet("All", Name = "COMPANHIAS AÉREAS")]
+        //public ActionResult<List<Company>> GetCompany() => _companyService.Get().Result;
 
-        [HttpGet("COMPANHIAS AÉREAS RESTRITAS")]
-        public ActionResult<List<Company>> GetRestrictedCompany() => _companyService.GetRestrictedCompany().Result;
+        //[HttpGet("Restricted",Name = "COMPANHIAS AÉREAS RESTRITAS")]
+        //public ActionResult<List<Company>> GetRestrictedCompany() => _companyService.GetRestrictedCompany().Result;
 
-        [HttpGet("COMPANHIAS AÉREAS LIBERADAS")]
-        public ActionResult<List<Company>> GetReleasedCompany() => _companyService.GetReleasedCompany().Result;
+        //[HttpGet("Released", Name ="COMPANHIAS AÉREAS LIBERADAS")]
+        //public ActionResult<List<Company>> GetReleasedCompany() => _companyService.GetReleasedCompany().Result;
 
-        [HttpGet("{cnpj}")]
-        public ActionResult<Company> Get(string cnpj)
-        {
-            var company = _companyService.GetByCnpj(cnpj);
+        //[HttpGet("Company/{cnpj}")]
+        //public ActionResult<Company> Get(string cnpj)
+        //{
+        //    var company = _companyService.GetByCnpj(cnpj);
 
-            if (company == null) return NotFound();
-            return company.Result;
-        }
+        //    if (company == null) return NotFound();
+        //    return company.Result;
+        //}
 
-        [HttpPut("{cnpj} Modificar Nome Fantasia")]
+        [HttpPut("Name/{cnpj}", Name = "Modificar Nome Fantasia")]
         public ActionResult<Company> UpdateNameOptCompany(string cnpj, string nameOpt)
         {
             Company companyAux = new();
@@ -82,7 +82,7 @@ namespace OnTheFly.Controllers
             return StatusCode(202);
         }
 
-        [HttpPut("{cnpj} Modificar Status da Companhia Aérea")]
+        [HttpPut("State/{cnpj}", Name = "Modificar Status da Companhia Aérea")]
         public ActionResult<Company> UpdateStatusCompany(string cnpj, Company company)
         {
             Company companyAux = new();
@@ -96,7 +96,7 @@ namespace OnTheFly.Controllers
             return StatusCode(202);
         }
 
-        [HttpPut("{cnpj} Modificar Endereço da Companhia Aérea")]
+        [HttpPut("Address/{cnpj}", Name = "Modificar Endereço da Companhia Aérea")]
         public ActionResult<Company> UpdateAddressCompany(string cnpj, Address address)
         {
             Company companyAux = new();
@@ -119,7 +119,7 @@ namespace OnTheFly.Controllers
             return StatusCode(202);
         }
 
-        [HttpDelete]
+        [HttpDelete("CNPJ")]
         public ActionResult Delete(string cnpj)
         {
             if (cnpj == null) return NotFound();
