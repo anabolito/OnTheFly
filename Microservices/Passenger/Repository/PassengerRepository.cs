@@ -4,6 +4,8 @@ using MongoDB.Driver;
 using PassengerAPI.DTO;
 using PassengerAPI.AddressService;
 using System.Security.Cryptography;
+using System.Web;
+using System.Globalization;
 
 namespace PassengerAPI.Repositories
 {
@@ -53,10 +55,15 @@ namespace PassengerAPI.Repositories
             return passenger;
         }
 
-        public List<Passenger> GetUnderAgeOnes()
+        public List<Passenger> GetAllMinors()
         {
-            var underAgeOnes = _passenger.Find(u => true).ToList();
-            return underAgeOnes;
+            var underAgePassengers = new List<Passenger>();
+            var passengers = _passenger.Find(p => true).ToList();
+            var restrictedPassengers = _restrictedPassenger.Find(p => true).ToList();
+
+            var minors = passengers.Where(p => CalculateAge(p.DtBirth) < 18).ToList();
+            var restrictedMinors = restrictedPassengers.Where(p => CalculateAge(p.DtBirth) < 18).ToList();
+            return underAgePassengers;
         }
 
         public List<Passenger> GetRestrictedOnes()
@@ -195,14 +202,17 @@ namespace PassengerAPI.Repositories
             return null;
         }
 
-        public Passenger UpdatePassengerBirthDate(string _id, DateTime birthdate)
+        public Passenger UpdatePassengerBirthDate(string _id, string birthdate)
         {
+            var decodedDate = HttpUtility.UrlDecode(birthdate);
+            var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
             if (passenger != null)
             {
-                passenger.DtBirth = birthdate;
+                passenger.DtBirth = date;
 
                 _passenger.ReplaceOne(p => p.CPF == _id, passenger);
                 return passenger;
@@ -210,7 +220,7 @@ namespace PassengerAPI.Repositories
             else if (restrictedPassenger != null)
             {
 
-                passenger.DtBirth = birthdate;
+                passenger.DtBirth = date;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
                 return restrictedPassenger;
@@ -218,14 +228,18 @@ namespace PassengerAPI.Repositories
             return null;
         }
 
-        public Passenger UpdatePassengerRegisterDate(string _id, DateTime registerDate)
+        public Passenger UpdatePassengerRegisterDate(string _id, string registerDate)
         {
+            var decodedDate = HttpUtility.UrlDecode(registerDate);
+            var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+
             var passenger = _passenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
             if (passenger != null)
             {
-                passenger.DtRegistry = registerDate;
+                passenger.DtRegistry = date;
 
                 _passenger.ReplaceOne(p => p.CPF == _id, passenger);
                 return passenger;
@@ -233,7 +247,7 @@ namespace PassengerAPI.Repositories
             else if (restrictedPassenger != null)
             {
 
-                passenger.DtRegistry = registerDate;
+                passenger.DtRegistry = date;
 
                 _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
                 return restrictedPassenger;
@@ -320,7 +334,7 @@ namespace PassengerAPI.Repositories
                 return unactivated;
             }
             return new Passenger();
-        }
+        }     
         private int CalculateAge(DateTime bd)
         {
             var today = DateTime.Today;

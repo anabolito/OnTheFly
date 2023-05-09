@@ -1,48 +1,45 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Models;
-using PassengerAPI.AddressService;
 using PassengerAPI.DTO;
-using PassengerAPI.Repositories;
-using PassengerAPI.Service;
-using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
+using Services;
 
-namespace PassengerAPI.Controllers
+namespace OnTheFly.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class PassengerController : ControllerBase
     {
-        private readonly PassengerRepository _passengerService;
-        private readonly PostOffice _postOffice;
+        private readonly PassengerService _passengerService;        
 
-        public PassengerController(PassengerRepository passengerService, PostOffice postOffice)
+        public PassengerController(PassengerService passengerService)
         {
-            _passengerService = passengerService;
-            _postOffice = postOffice;
+            _passengerService = passengerService;           
         }
         
         [HttpGet("Passengers")]
         public ActionResult<List<Passenger>> Get()
         {
             return Ok(_passengerService.Get());
+
         }
 
         [HttpGet("UndeAgeOnes")]
         public ActionResult<List<Passenger>> GetAllMinors()
         {
             var minors = _passengerService.GetAllMinors();
-            return minors;
+            return Ok(minors);
         }
+
 
         [HttpGet("Inactives")]
         public ActionResult<List<Passenger>> GetDeletedOnes()
         {
             return Ok(_passengerService.GetDeletedOnes());
         }
-        
+
         [HttpGet("{_id}")]
-        public ActionResult<Passenger> GetByCPF(string _id)
+        public ActionResult<Passenger> Get(string _id)
         {
             var passenger = _passengerService.GetByCPF(_id);
             if (passenger == null) return new Passenger();
@@ -52,33 +49,25 @@ namespace PassengerAPI.Controllers
         [HttpPost]
         public ActionResult Post(PassengerDTO passengeDTO, int number, string complement)
         {
-            var dto = _postOffice.GetAddress(passengeDTO.CEP).Result;
-            if (!ValidateDocument.ValidateCPF(passengeDTO.CPF, passengeDTO.CPF)) return BadRequest("CPF Inválido!");
 
             Address address = new()
             {
                 Number = number,
                 Complement = complement,
-
-                Street = dto.Street,
-                Neighborhood = dto.Neighborhood,
-                City = dto.City,
-                State = dto.State,
-                ZipCode = dto.ZipCode,
+                ZipCode = passengeDTO.CEP,
             };
 
-            Passenger passenger = new(passengeDTO, address);           
+            Passenger passenger = new(passengeDTO, address);
 
             try
-            {
-                _passengerService.Create(passenger);
+            {               
                 return StatusCode(201);
 
             }
             catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
-            }   
+            }
         }
 
         [HttpPut("{id}/Address")]
@@ -148,7 +137,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("{id}/Reactivate")]
         public void ReactivatePassenger(string id)
         {
-            _passengerService.ReativatePassenger(id);
+            _passengerService.ReactivatePassenger(id);
         }
         
         [HttpDelete("{id}/Delete")]
