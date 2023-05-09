@@ -18,7 +18,7 @@ namespace Models
         public int Capacity { get; set; }
 
         [BsonElement("DtLastFlight")]
-        public DateTime? DtLastFlight { get; set; }
+        public DateTime? DtLastFlight { get; set; } = null;
 
         [BsonElement("DtRegistry")]
         public DateTime DtRegistry { get; set; }
