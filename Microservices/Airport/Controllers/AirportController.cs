@@ -24,7 +24,7 @@ namespace AirportAPI.Controllers
             if (airport == null)
                 return NotFound();
 
-            return airport;
+            return Ok(airport);
         }
         
         [HttpGet("/ByState/{state}", Name = "GetAirportState")]

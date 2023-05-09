@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AirportAPI.Models;
-using Models;
+﻿using AirportAPI.Models;
 using Newtonsoft.Json;
 
 namespace Services
@@ -21,11 +15,11 @@ namespace Services
                 HttpResponseMessage response = await client.GetAsync(url + iata);
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<AirportPestanic>>(flight).FirstOrDefault();
+                return JsonConvert.DeserializeObject<AirportPestanic>(flight);
             }
             catch (HttpRequestException e)
             {
-                throw;
+                return null;
             }
         }
 

@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ExternalServices\Services\Services.csproj" />
     <ProjectReference Include="..\..\Models\Models.csproj" />
+    <ProjectReference Include="..\Airport\AirportAPI.csproj" />
   </ItemGroup>
 
 </Project>

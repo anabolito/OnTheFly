@@ -63,7 +63,7 @@ namespace Services
         public async Task<Flight> Post(FlightDTO flightDTO)
         {
             var destinyPestanic = new AirportService().GetIata(flightDTO.IataDestiny).Result;
-            var departurePestanic = new AirportService().GetIata(flightDTO.IataDparture).Result;
+            var departurePestanic = new AirportService().GetIata(flightDTO.IataDeparture).Result;
             var plane = new AircraftService().GetById(flightDTO.RabPlane).Result;
 
             Airport destiny = new Airport()
@@ -91,7 +91,7 @@ namespace Services
                 Departure = departure,
                 Plane = plane,
                 DtDeparture = flightDTO.DtDeparture,
-                Sales = flightDTO.Sales,
+                Sales = 0,
                 Status = flightDTO.Status
             };
 

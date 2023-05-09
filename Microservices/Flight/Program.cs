@@ -1,6 +1,8 @@
 using FlightAPI.Repositories;
 using FlightAPI.Utils;
 using Microsoft.Extensions.Options;
+using Models;
+using Services;
 
 internal class Program
 {
@@ -18,6 +20,8 @@ internal class Program
         builder.Services.Configure<FlightSettings>(builder.Configuration.GetSection("FlightsSettings"));
         builder.Services.AddSingleton<IFlightSettings>(s => s.GetRequiredService<IOptions<FlightSettings>>().Value);
         builder.Services.AddSingleton<FlightRepository>();
+        builder.Services.AddSingleton<AircraftService>();
+        builder.Services.AddSingleton<AirportService>();
 
         var app = builder.Build();
 

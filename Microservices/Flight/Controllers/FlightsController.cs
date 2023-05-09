@@ -1,6 +1,7 @@
 ﻿using FlightAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Models.DTOs;
 
 namespace FlightAPI.Controllers
 {
@@ -17,7 +18,7 @@ namespace FlightAPI.Controllers
         }
         #endregion
 
-        #region Get
+        
         [HttpGet]
         public ActionResult<List<Flight>> GetFlight()
         {
@@ -47,21 +48,16 @@ namespace FlightAPI.Controllers
             else
                 return NoContent();
         }
-        #endregion
-
-        #region Post
+        
         [HttpPost]
-        public ActionResult<Flight> PostFlight(Flight flight)
+        public ActionResult<Flight> PostFlight(FlightDTO flight)
         {
-            flight.Id = null;
             if (_flightRepository.PostFlightAsync(flight).Result != null)
                 return Ok(flight);
             else
                 return BadRequest();
         }
-        #endregion
-
-        #region Put
+        
         [HttpPut("{iata}/{rab}/{date}")]
         public ActionResult<Flight> PutFlight(string iata, string rab, string date)
         {
@@ -75,9 +71,7 @@ namespace FlightAPI.Controllers
             else
                 return BadRequest();
         }
-        #endregion
 
-        #region Delete
         [HttpDelete("{iata}/{rab}/{date}")]
         public ActionResult DeleteFlight(string iata, string rab, string date)
         {
@@ -86,6 +80,6 @@ namespace FlightAPI.Controllers
             else
                 return NotFound();
         }
-        #endregion
+
     }
 }

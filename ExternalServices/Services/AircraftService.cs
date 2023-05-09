@@ -42,7 +42,7 @@ namespace Services
             }
             catch (HttpRequestException e)
             {
-                throw;
+                return null;
             }
         }
 
