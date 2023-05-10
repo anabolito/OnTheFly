@@ -5,7 +5,9 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
+using MongoDB.Bson.IO;
 using Newtonsoft.Json;
+using JsonConvert = Newtonsoft.Json.JsonConvert;
 
 namespace Services
 {

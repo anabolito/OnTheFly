@@ -40,6 +40,10 @@ namespace CompanyAPI.Repositories
         }
         public List<Company> GetReleasedCompany()
         {
+            if (_releasedCompany.Find(company => true).ToList().Count == 0)
+            {
+                throw new BadHttpRequestException("Não há companhias aéreas liberadas.");
+            }
             return _releasedCompany.Find(company => true).ToList();
         }
 
@@ -47,60 +51,79 @@ namespace CompanyAPI.Repositories
         {
             if (_restrictedCompany.Find(company => true).ToList().Count == 0)
             {
-                Console.WriteLine("Não há companhias aéreas restritas.");
                 throw new BadHttpRequestException("Não há companhias aéreas restritas.");
             }
             return _restrictedCompany.Find(company => true).ToList();
         }
+    
 
         public List<Company> GetDeletedCompany()
         {
             if (_deletedCompany.Find(company => true).ToList().Count == 0)
             {
-                //Console.WriteLine("Não há companhias aéreas deletadas.");
                 throw new BadHttpRequestException("Não há companhias aéreas deletadas.");
             }
 
             return _deletedCompany.Find(company => true).ToList();
         }
 
-        public Company GetCompanyByCnpj(string cnpj) =>
-            _releasedCompany.Find(company => company.CNPJ == cnpj).FirstOrDefault();
+        public Company GetCompanyByCnpj(string cnpj)
+        {
+            var company = _releasedCompany.Find(a => a.CNPJ == cnpj).FirstOrDefault();
+
+            if (company == null)
+            {
+                company = _restrictedCompany.Find(a => a.CNPJ == cnpj).FirstOrDefault();
+            }
+            return company;
+        }
+
+        
+        public void DeleteCompany(string cnpj)
+        {
+            var company = _releasedCompany.Find(a => a.CNPJ == cnpj).FirstOrDefault();
+            if (company == null)
+            {
+                company = _restrictedCompany.Find(a => a.CNPJ == cnpj).FirstOrDefault();
+            }
+            _deletedCompany.InsertOne(company);
+            _releasedCompany.DeleteOne(a => a.CNPJ == cnpj);
+            _restrictedCompany.DeleteOne(a => a.CNPJ == cnpj);
+        }
 
         public void UpdateCompany(string cnpj, Company company)
         {
             Company companyAux = new();
             companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
             var status = companyAux.Status;
-
             _releasedCompany.ReplaceOne(a => a.CNPJ == cnpj, company);
+           
         }
-
         public bool UpdateRestrictionCompany(string cnpj)
         {
             var companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
             if (companyAux == null)
             {
-                companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
-                _restrictedCompany.DeleteOne(companyAux => companyAux.CNPJ == cnpj);
+                companyAux = _restrictedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
                 _releasedCompany.InsertOne(companyAux);
+                _restrictedCompany.DeleteOne(companyAux => companyAux.CNPJ == cnpj);
             }
 
             else
             {
-                companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
-                _releasedCompany.DeleteOne(companyAux => companyAux.CNPJ == cnpj);
+                //companyAux = _releasedCompany.Find(companyAux => companyAux.CNPJ == cnpj).FirstOrDefault();
                 _restrictedCompany.InsertOne(companyAux);
+                _releasedCompany.DeleteOne(companyAux => companyAux.CNPJ == cnpj);
             }
             return true;
         }
-        public void DeleteCompany(string cnpj)
-        {
-            var company = _releasedCompany.Find(a => a.CNPJ == cnpj).FirstOrDefault();
+        //public void DeleteCompany(string cnpj)
+        //{
+        //    var company = _releasedCompany.Find(a => a.CNPJ == cnpj).FirstOrDefault();
 
-            _deletedCompany.InsertOne(company);
-            _releasedCompany.DeleteOne(a => a.CNPJ == cnpj);
-        }
+        //    _deletedCompany.InsertOne(company);
+        //    _releasedCompany.DeleteOne(a => a.CNPJ == cnpj);
+        //}
 
         public bool CnpjValidation(string cnpj)
         {

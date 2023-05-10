@@ -16,6 +16,20 @@ namespace AircraftAPI.Controllers
             _aircraftAPIService = aircraftAPIService;
         }
 
+        [HttpPost]
+        public ActionResult<Aircraft> Create(Aircraft aircraft)
+        {
+            try
+            {
+                _aircraftAPIService.Create(aircraft);
+                return StatusCode(201, aircraft);
+            }
+            catch (BadHttpRequestException ex)
+            {
+                return NotFound(ex.Message); ;
+            }
+        }
+
         [HttpGet]
         public ActionResult<List<Aircraft>> Get()
         {
@@ -43,6 +57,7 @@ namespace AircraftAPI.Controllers
             }
         }
 
+
         [HttpGet("{rab}")]
         public ActionResult<Aircraft> Get(string rab)
         {
@@ -57,19 +72,6 @@ namespace AircraftAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult<Aircraft> Create(Aircraft aircraft)
-        {
-            try
-            {
-                _aircraftAPIService.Create(aircraft);
-                return StatusCode(201, aircraft);
-            }
-            catch (BadHttpRequestException ex)
-            {
-                return NotFound(ex.Message); ;
-            }
-        }
 
         [HttpPut("UpdateDtLastFlight/{rab}")]
         public ActionResult UpdateDtLastFlight(string rab, Aircraft aircraft)
@@ -108,7 +110,6 @@ namespace AircraftAPI.Controllers
 
             return StatusCode(201);
 
-            
         } 
 
     }
