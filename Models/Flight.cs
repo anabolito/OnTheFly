@@ -10,8 +10,8 @@ namespace Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("Destiny")]
-        public Airport Destiny { get; set; }
+        [BsonElement("Arrival")]
+        public Airport Arrival { get; set; }
 
         [BsonElement("Departure")]
         public Airport Departure{ get; set; }

@@ -87,7 +87,7 @@ namespace Services
 
             Flight flight = new Flight()
             {
-                Destiny = destiny,
+                Arrival = destiny,
                 Departure = departure,
                 Plane = plane,
                 DtDeparture = flightDTO.DtDeparture,

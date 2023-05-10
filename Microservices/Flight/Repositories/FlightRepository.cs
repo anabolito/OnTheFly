@@ -57,7 +57,7 @@ namespace FlightAPI.Repositories
 
             var builder = Builders<Flight>.Filter;
 
-            var airport = builder.Eq(f => f.Destiny.IATA, iata);
+            var airport = builder.Eq(f => f.Arrival.IATA, iata);
             var plane = builder.Eq(f => f.Plane.RAB, rab);
 
             var filter = builder.And(airport, plane, greater, less);
@@ -98,7 +98,7 @@ namespace FlightAPI.Repositories
             Flight flight = new()
             {
                 Departure = departure,
-                Destiny = destiny,
+                Arrival = destiny,
                 DtDeparture = flightDTO.DtDeparture,
                 Plane = plane,
                 Sales = 0,
@@ -126,7 +126,7 @@ namespace FlightAPI.Repositories
             var less = Builders<Flight>.Filter.Lt(f => f.DtDeparture, date.AddDays(1));
 
             var builder = Builders<Flight>.Filter;
-            var airport = builder.Eq(f => f.Destiny.IATA, iata);
+            var airport = builder.Eq(f => f.Arrival.IATA, iata);
             var plane = builder.Eq(f => f.Plane.RAB, rab);
 
             var filter = builder.And(airport, plane, greater, less);
@@ -150,7 +150,7 @@ namespace FlightAPI.Repositories
             var less = Builders<Flight>.Filter.Lt(f => f.DtDeparture, date.AddDays(1));
 
             var builder = Builders<Flight>.Filter;
-            var airport = builder.Eq(f => f.Destiny.IATA, iata);
+            var airport = builder.Eq(f => f.Arrival.IATA, iata);
             var plane = builder.Eq(f => f.Plane.RAB, rab);
 
             var filter = builder.And(airport, plane, greater, less);
