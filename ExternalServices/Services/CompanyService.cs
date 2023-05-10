@@ -58,6 +58,7 @@ namespace Services
                 throw;
             }
         }
+
         public async Task<Company> GetByCnpj(string cnpj)
         {
             try
