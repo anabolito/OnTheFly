@@ -29,9 +29,10 @@ namespace SaleAPI.Controllers
 
         #region Post
         [HttpPost]
-        public ActionResult<Sale> PostSale(SaleDTO sale)
+        public ActionResult<Sale> PostSale(SaleDTO saleDTO)
         {
-            if (_salesRepository.PostSalesAsync(sale).Result)
+            var sale =  _salesRepository.PostSalesAsync(saleDTO).Result; 
+            if (sale != null)
                 return Ok(sale);
             else
                 return BadRequest();

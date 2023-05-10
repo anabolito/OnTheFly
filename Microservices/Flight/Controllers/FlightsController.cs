@@ -53,7 +53,7 @@ namespace FlightAPI.Controllers
         public ActionResult<Flight> PostFlight(FlightDTO flight)
         {
             if (_flightRepository.PostFlightAsync(flight).Result != null)
-                return Ok(flight);
+                return StatusCode(201, flight);
             else
                 return BadRequest();
         }
@@ -67,7 +67,7 @@ namespace FlightAPI.Controllers
             var flight = _flightRepository.PutFlightAsync(iata, rab, date).Result;
 
             if (flight != null)
-                return Ok(flight);
+                return StatusCode(201, flight);
             else
                 return BadRequest();
         }
@@ -76,7 +76,7 @@ namespace FlightAPI.Controllers
         public ActionResult DeleteFlight(string iata, string rab, string date)
         {
             if (_flightRepository.DeleteFlightAsync(iata, rab, date).Result)
-                return Accepted();
+                return Ok();
             else
                 return NotFound();
         }

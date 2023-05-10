@@ -6,7 +6,6 @@ using Models.DTOs;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Services;
-using AirportAPI.Models;
 
 namespace FlightAPI.Repositories
 {

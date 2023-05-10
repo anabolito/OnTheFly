@@ -8,15 +8,16 @@ using System.Net.Http.Json;
 using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
 using System.Runtime.ConstrainedExecution;
 using System.Xml.Linq;
+using System.Net;
 
 namespace Services
 {
     public class PassengerService
     {
-        static readonly string url = "https://localhost:7264/api/Passenger/Passengers/";
+        static readonly string url = "https://localhost:7264/api/Passenger/";
         static readonly HttpClient client = new HttpClient();
 
-        [HttpGet("Passengers")]
+
         public async Task<List<Passenger>> Get()
         {
             try
@@ -31,24 +32,6 @@ namespace Services
                 throw new(e.Message);
             }
         }
-
-        [HttpGet("Inactives")]
-        public async Task<List<Passenger>> GetDeletedOnes()
-        {
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string passenger = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<Passenger>>(passenger);
-            }
-            catch (HttpRequestException e)
-            {
-                throw new(e.Message);
-            }
-        }
-
-        [HttpGet("UnderAgeOnes")]
         public async Task<List<Passenger>> GetAllMinors()
         {
             try
@@ -64,12 +47,41 @@ namespace Services
             }
         }
 
-        [HttpGet("{_id}")]
-        public async Task<Passenger> GetByCPF(string _id)
+        public async Task<List<Passenger>> GetDeletedOnes()
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url + _id);
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Passenger>>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }        
+
+        public async Task<List<Passenger>> GetRestrictedOnes()
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Passenger>>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+
+        public async Task<Passenger> GetByCPF(string cpf)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url + cpf);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -79,8 +91,7 @@ namespace Services
                 throw new(e.Message);
             }
         }
-       
-        [HttpPost]
+
         public async Task<Passenger> Post(PassengerDTO passengerDTO, int number, string complement)
         {
             PostOffice post = new();
@@ -121,12 +132,11 @@ namespace Services
             }
         }
 
-        [HttpPut("{id}/{Address}")]
-        public async Task<Passenger> UpdatePassengerAddress(string id, int number, string? complement, string cep)
+        public async Task<Passenger> UpdatePassengerAddress(string cpf, int number, string? complement, string cep)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/Address", new { id, number, complement, cep });
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "Address/" + cpf, new { cpf, number, complement, cep });
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -137,12 +147,10 @@ namespace Services
             }
         }
 
-        [HttpPut("{id}/{Name}")]
-        public async Task<Passenger> UpdatePassengerName(string id, string name)
-        {
+        public async Task<Passenger> UpdatePassengerAddressStreet(string cpf, string streetName)   {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/Name", name);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Street",streetName);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -153,12 +161,11 @@ namespace Services
             }
         }
 
-        [HttpPut("{id}/Gen")]
-        public async Task<Passenger> UpdatePassengerGender(string id, char gen)
+        public async Task<Passenger> UpdatePassengerName(string cpf, string name)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/Gen", gen);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "Name/" + cpf , name);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -169,12 +176,11 @@ namespace Services
             }
         }
 
-        [HttpPut("{id}/Phone")]
-        public async Task<Passenger> UpdatePassengerPhone(string id, string phone)
+        public async Task<Passenger> UpdatePassengerGender(string cpf, char gen)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/Phone", phone);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "Gen/" + cpf , gen);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -185,12 +191,11 @@ namespace Services
             }
         }
 
-        [HttpPut("{id}/BirthDate")]
-        public async Task<Passenger> UpdatePassengerBirthDate(string id, string birth)
+        public async Task<Passenger> UpdatePassengerPhone(string cpf, string phone)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/BirthDate", birth);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url +"Phone/" + cpf , phone);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -199,31 +204,13 @@ namespace Services
             {
                 throw new(e.Message);
             }
+        }       
 
-        }
-
-        [HttpPut("{id}/RegisterDate")]
-        public async Task<Passenger> UpdatePassengerRegisterDate(string id, string reg)
+        public async Task<Passenger> UpdatePassengerStatus(string cpf, bool stat)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/RegisterDate", reg);
-                response.EnsureSuccessStatusCode();
-                string passenger = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Passenger>(passenger);
-            }
-            catch (HttpRequestException e)
-            {
-                throw new(e.Message);
-            }
-        }
-
-        [HttpPut("{id}/Status")]
-        public async Task<Passenger> UpdatePassengerStatus(string id, bool stat)
-        {
-            try
-            {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + id + "/Status", stat);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "Status/" + cpf  , stat);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -234,12 +221,41 @@ namespace Services
             }
         }
 
-        [HttpPut("{id}/Reactivate")]
-        public async Task<Passenger> ReactivatePassenger(string id)
+        public async Task<Passenger> SetPassengerAsRestricted(string cpf)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Reactivate", id);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url, cpf);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Passenger>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+
+        public async Task<Passenger> SetPassengerAsUnRestricted(string cpf)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url, cpf);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Passenger>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+
+        public async Task<Passenger> ReactivatePassenger(string cpf)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Reactivate", cpf);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);
@@ -250,12 +266,11 @@ namespace Services
             }
         }
                 
-        [HttpDelete("{id}/Delete")]
-        public async Task<Passenger> Delete(string id)
+        public async Task<Passenger> Delete(string cpf)
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Delete", id);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Delete", cpf);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);

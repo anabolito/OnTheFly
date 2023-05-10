@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using System.Text.Json;
+using Models;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -25,16 +26,14 @@ namespace QueuePersistence
             collectionReservedSales = database.GetCollection<BsonDocument>(_reservedSalesCollectionName);
         }
 
-        public void InsertSale(byte[] sale)
+        public void InsertSale(BsonDocument bson, Sale sale)
         {
-            var saleSerialized = BsonSerializer.Deserialize<BsonDocument>(sale);
-            var saleDeserialized = BsonSerializer.Deserialize<Sale>(sale);
-            if (saleDeserialized.Sold)
+            if (sale.Sold)
             {
-                collectionSales.InsertOne(saleSerialized);
+                collectionSales.InsertOne(bson);
             }
             else
-                collectionReservedSales.InsertOne(saleSerialized);
+                collectionReservedSales.InsertOne(bson);
         }
     }
 }

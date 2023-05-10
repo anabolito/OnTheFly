@@ -21,45 +21,85 @@ namespace PassengerAPI.Controllers
             _passengerService = passengerService;
             _postOffice = postOffice;
         }
-        
-        [HttpGet("Passengers")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("GetAllActives")]
         public ActionResult<List<Passenger>> Get()
         {
-            return Ok(_passengerService.Get());
+            var passengers = _passengerService.Get();
+            if (passengers == null) return StatusCode(404, "Não existem passageiros cadastrados!");
+
+            return Ok(passengers);
         }
 
-        [HttpGet("UndeAgeOnes")]
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("UnderAgeOnes")]
         public ActionResult<List<Passenger>> GetAllMinors()
         {
             var minors = _passengerService.GetAllMinors();
+            if (minors == null) return StatusCode(404, "Não existem passageiros menores de idade cadastrados!");
             return minors;
         }
 
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("Inactives")]
         public ActionResult<List<Passenger>> GetDeletedOnes()
         {
-            return Ok(_passengerService.GetDeletedOnes());
+            var inactives = _passengerService.GetDeletedOnes();
+            if (inactives == null) return StatusCode(404, "Não existem passageiros inativos!");
+            return inactives;
         }
-        
-        [HttpGet("{_id}")]
-        public ActionResult<Passenger> GetByCPF(string _id)
+
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("RestrictedOnes")]
+        public ActionResult<List<Passenger>> GetRestrictedOnes()
         {
-            var passenger = _passengerService.GetByCPF(_id);
-            if (passenger == null) return new Passenger();
+            var restricted =_passengerService.GetRestrictedOnes();
+            if (restricted == null) return StatusCode(404, "Não existem passageiros restritos!");
+            return restricted;
+        }
+
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpGet("{cpf}")]
+        public ActionResult<Passenger> GetByCPF(string cpf)
+        {
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.GetByCPF(cpf);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
+
             return Ok(passenger);
         }
 
-        [HttpPost]
-        public ActionResult Post(PassengerDTO passengeDTO, int number, string complement)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("Create")]
+        public ActionResult<Passenger> Post(PassengerDTO passengerDTO)
         {
-            var dto = _postOffice.GetAddress(passengeDTO.CEP).Result;
-            if (!ValidateDocument.ValidateCPF(passengeDTO.CPF, passengeDTO.CPF)) return BadRequest("CPF Inválido!");
+            var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
+            if (!ValidateDocument.ValidateCPF(passengerDTO.CPF, passengerDTO.CPF)) return BadRequest("CPF Inválido!");
+
+            var number = 0;
+            var complement = "";
 
             Address address = new()
             {
-                Number = number,
-                Complement = complement,
-
+                Number = passengerDTO.Number,
+                Complement = passengerDTO.Complement,
                 Street = dto.Street,
                 Neighborhood = dto.Neighborhood,
                 City = dto.City,
@@ -67,12 +107,12 @@ namespace PassengerAPI.Controllers
                 ZipCode = dto.ZipCode,
             };
 
-            Passenger passenger = new(passengeDTO, address);           
+            Passenger passenger = new(passengerDTO, address);           
 
             try
             {
                 _passengerService.Create(passenger);
-                return StatusCode(201);
+                return StatusCode(201, passenger);
 
             }
             catch (BadHttpRequestException e)
@@ -81,80 +121,152 @@ namespace PassengerAPI.Controllers
             }   
         }
 
-        [HttpPut("{id}/Address")]
-        public ActionResult<Passenger> UpdatePassengerAddress(string id, int number, string? complement, string cep)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Address/number/complement/{cpf}")]
+        public ActionResult<Passenger> UpdatePassengerAddress(string cpf, string cep, int number, string complement)
         {
-            var passenger = _passengerService.UpdatePassengerAddress(id, number, complement, cep);
-            if (passenger == null) return NotFound();
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.UpdatePassengerAddress(cpf, cep, number, complement);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
+
+            return Created(string.Empty, passenger);
+        }
+
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Street/{cpf}")]
+        public ActionResult<Passenger> UpdatePassengerAddressStreet(string cpf, string streetName)
+        {
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.UpdatePassengerAddressStreet(cpf, streetName);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/Name")]
-        public ActionResult<Passenger> UpdatePassengerName(string id, string name)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Name/{cpf}")]
+        public ActionResult<Passenger> UpdatePassengerName(string cpf, string name)
         {
-            var passenger = _passengerService.UpdatePassengerName(id, name);
-            if (passenger == null) return NotFound();
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.UpdatePassengerName(cpf, name);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/Gen")]
-        public ActionResult<Passenger> UpdatePassengerGender(string id, char gen)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Gen/{cpf}")]
+        public ActionResult<Passenger> UpdatePassengerGender(string cpf, char gen)
         {
-            var passenger = _passengerService.UpdatePassengerGender(id, gen);
-            if (passenger == null) return NotFound();
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.UpdatePassengerGender(cpf, gen);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/Phone")]
-        public ActionResult<Passenger> UpdatePassengerPhone(string id, string phone)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Phone/{cpf}")]
+        public ActionResult<Passenger> UpdatePassengerPhone(string cpf, string phone)
         {
-            var passenger = _passengerService.UpdatePassengerPhone(id, phone);
-            if (passenger == null) return NotFound();
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.UpdatePassengerPhone(cpf, phone);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/BirthDate")]
-        public ActionResult<Passenger> UpdatePassengerBirthDate(string id, string birth)
-        {
 
-            var passenger = _passengerService.UpdatePassengerBirthDate(id, birth);
-            if (passenger == null) return NotFound();
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Status/{cpf}")]
+        public ActionResult<Passenger> UpdatePassengerStatus(string cpf)
+        {
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.UpdatePassengerStatus(cpf);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/RegisterDate")]
-        public ActionResult<Passenger> UpdatePassengerRegisterDate(string id, string reg)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/SetRestrict/{cpf}")]
+        public ActionResult<Passenger> SetPassengerAsRestricted(string cpf)
         {
-            var passenger = _passengerService.UpdatePassengerRegisterDate(id, reg);
-            if (passenger == null) return NotFound();
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.SetPassengerAsRestricted(cpf);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/Status")]
-        public ActionResult<Passenger> UpdatePassengerStatus(string id, bool stat)
+
+
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/SetUnrestrict/{cpf}")]
+        public ActionResult<Passenger> SetPassengerAsUnrestricted(string cpf)
         {
-            var passenger = _passengerService.UpdatePassengerStatus(id, stat);
-            if (passenger == null) return NotFound();
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.SetPassengerAsUnrestricted(cpf);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
 
             return Ok(passenger);
         }
 
-        [HttpPut("{id}/Reactivate")]
-        public void ReactivatePassenger(string id)
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpPut("/Reactivate/{cpf}")]
+        public ActionResult<Passenger> ReactivatePassenger(string cpf)
         {
-            _passengerService.ReativatePassenger(id);
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger =_passengerService.ReativatePassenger(cpf);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
+            return Ok(passenger);
         }
-        
-        [HttpDelete("{id}/Delete")]
-        public void Delete(string id)
+
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [HttpDelete("/Desactivate/{cpf}")]
+        public ActionResult <Passenger>Delete(string cpf)
         {
-            _passengerService.Delete(id);
+            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            var passenger = _passengerService.Delete(cpf);
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
+            return Ok(passenger);
         }
     }
 }

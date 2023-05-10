@@ -4,7 +4,7 @@ namespace PassengerAPI.DTO
 {
     public class AddressDTO
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         [JsonProperty("logradouro")]
         public string? Street { get; set; }
@@ -24,9 +24,8 @@ namespace PassengerAPI.DTO
         [JsonProperty("cep")]
         public string? ZipCode { get; set; }
 
-        public AddressDTO(int id, string? street, string? complement, string? neighborhood, string? city, string? state, string? zipCode)
-        {
-            Id = id;
+        public AddressDTO(string? street, string? complement, string? neighborhood, string? city, string? state, string? zipCode)
+        {            
             Street = street;
             Complement = complement;
             Neighborhood = neighborhood;
@@ -34,5 +33,6 @@ namespace PassengerAPI.DTO
             State = state;
             ZipCode = zipCode;
         }
+        
     }
 }

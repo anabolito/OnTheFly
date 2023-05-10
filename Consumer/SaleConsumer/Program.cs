@@ -29,18 +29,19 @@ using (var connection = factory.CreateConnection())
             consumer.Received += async (model, ea) =>
             {
                 var body = ea.Body.ToArray();
+                var returnMessage = Encoding.UTF8.GetString(body);
+                var message = JsonConvert.DeserializeObject<Sale>(returnMessage);
+                var bson = BsonDocument.Parse(returnMessage);
 
                 try
                 {
-                    new Persistence().InsertSale(body);
+                    new Persistence().InsertSale(bson, message);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error: " + ex.Message);
                     throw;
                 }
-
-
 
             };
 

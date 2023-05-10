@@ -40,7 +40,7 @@ namespace CompanyAPI.Controller
             };
             company.Address = address;
 
-            if(company.NameOpt == null)
+            if (company.NameOpt == null)
             {
                 company.NameOpt = company.Name;
             }
@@ -82,7 +82,6 @@ namespace CompanyAPI.Controller
             {
                 return NotFound(ex.Message);
             }
-
         }
 
         [HttpGet("DeletedCompany")]
