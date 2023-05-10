@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ExternalServices\Services\Services.csproj" />
     <ProjectReference Include="..\..\Models\Models.csproj" />
   </ItemGroup>
 

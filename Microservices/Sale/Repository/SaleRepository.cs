@@ -8,6 +8,7 @@ using SaleAPI.Utils;
 using Models.DTOs;
 using System.Globalization;
 using System.Web;
+using Services;
 
 namespace SaleAPI.Repository
 {
@@ -17,10 +18,12 @@ namespace SaleAPI.Repository
         private readonly IMongoCollection<Sale> _reservedSales;
         private readonly IMongoCollection<Sale> _deletedSales;
         private readonly ConnectionFactory _factory;
-        private const string QUEUE_NAME = "sale";
+        private readonly FlightService _flightService;
+        private readonly PassengerService _passengerService;
+        private string QUEUE_NAME;
 
 
-        public SaleRepository(ISaleSettings settings, ConnectionFactory factory)
+        public SaleRepository(ISaleSettings settings, ConnectionFactory factory, FlightService flightService, PassengerService passengerService)
         {
             var client = new MongoClient(settings.ConnectionString);
             var flightDatabase = client.GetDatabase(settings.DataBaseName);
@@ -29,6 +32,8 @@ namespace SaleAPI.Repository
             _reservedSales = flightDatabase.GetCollection<Sale>(settings.ReservedSalesCollectionName);
             _deletedSales = flightDatabase.GetCollection<Sale>(settings.DeletedSalesCollectionName);
             _factory = factory;
+            _flightService = flightService;
+            _passengerService = passengerService;
         }
 
 
@@ -47,22 +52,43 @@ namespace SaleAPI.Repository
         #endregion
 
         #region Post
-        public async Task<bool> PostSalesAsync([FromBody] Sale sale)
+        public async Task<bool> PostSalesAsync([FromBody] SaleDTO saleDTO)
         {
 
-            int date = CalcularIdade(sale.Passengers[0].DtBirth);
+            Flight flight = _flightService.Get(saleDTO.IataFlight, saleDTO.RabFlight, saleDTO.DtDepartureFlight).Result;
 
-            if (date < 18)
-                return false;
+            List<Passenger> passengerList = new();
+            saleDTO.Cpf.ForEach(async c =>  passengerList.Add(_passengerService.GetByCPF(c).Result));
 
-            foreach (var item in sale.Passengers)
+            Sale sale = new()
             {
-                if (item.Status == false)
-                    return false;
-            }
+                Flight = flight,
+                Passengers = passengerList,
+                Reserved = saleDTO.Reserved,
+                Sold = saleDTO.Sold
+            };
 
-            if (sale.Passengers.GroupBy(x=>x).Any(p => p.Count() > 1))
+            //int date = CalcularIdade(sale.Passengers[0].DtBirth);
+
+            //if (date < 18)
+            //    return false;
+
+            //foreach (var item in sale.Passengers)
+            //{
+            //    if (item.Status == false)
+            //        return false;
+            //}
+
+            if (sale.Passengers.GroupBy(x => x).Any(p => p.Count() > 1))
                 return false;
+
+            if (sale.Sold == sale.Reserved)
+                return false;
+
+            if ((sale.Sold == true) && (sale.Reserved == false))
+                QUEUE_NAME = "sold";
+            else
+                QUEUE_NAME = "reserved";
 
             using (var connection = _factory.CreateConnection())
             {

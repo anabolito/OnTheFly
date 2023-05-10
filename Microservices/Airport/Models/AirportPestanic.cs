@@ -6,32 +6,32 @@ using System.Text.Json.Serialization;
 namespace AirportAPI.Models
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class Airport
+    public class AirportPestanic
     {
         //[BsonId]
-        [JsonPropertyName("_id")]
+        [BsonElement("_id")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string id { get; set; }
-        [JsonPropertyName("iata")]
+        [BsonElement("iata")]
         [BsonRepresentation(BsonType.String)]
         public string iata { get; set; }
-        [JsonPropertyName("time_zone_id")]
+        [BsonElement("time_zone_id")]
         public string time_zone_id { get; set; }
-        [JsonPropertyName("name")]
+        [BsonElement("name")]
         public string name { get; set; }
-        [JsonPropertyName("city_code")]
+        [BsonElement("city_code")]
         public string city_code { get; set; }
-        [JsonPropertyName("country_ìd")]
-        public string country_id { get; set; }
-        [JsonPropertyName("location")]
+        [BsonElement("country_id")]
+        public string? country_id { get; set; }
+        [BsonElement("location")]
         public string location { get; set; }
-        [JsonPropertyName("elevation")]
+        [BsonElement("elevation")]
         public string elevation { get; set; }
-        [JsonPropertyName("icao")]
+        [BsonElement("icao")]
         public string icao { get; set; }
-        [JsonPropertyName("city")]
+        [BsonElement("city")]
         public string city { get; set; }
-        [JsonPropertyName("state")]
-        public string state { get; set; }
+        [BsonElement("state")]
+        public string? state { get; set; }
     }
 }
