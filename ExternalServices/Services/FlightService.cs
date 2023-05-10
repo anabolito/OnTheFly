@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Models;
 using Models.DTOs;
 using Newtonsoft.Json;
@@ -47,9 +48,11 @@ namespace Services
 
         public async Task<Flight> Get(string iata, string rab, string date)
         {
+            string teste = HttpUtility.UrlEncode(date);
+            //      10%2F05%2F2023
             try
             {
-                HttpResponseMessage response = await client.GetAsync(url + "/" + iata + "/" + rab + "/" + date);
+                HttpResponseMessage response = await client.GetAsync(url + iata + "/" + rab + "/" + teste);
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Flight>(flight);

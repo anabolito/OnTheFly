@@ -1,12 +1,11 @@
-﻿using AirportAPI.Models;
-using Models.DTOs;
+﻿using Models.DTOs;
 using Newtonsoft.Json;
 
 namespace Services
 {
     public class AirportService
     {
-        private readonly string url = "https://localhost:44366/Airport/";
+        private readonly string url = "https://localhost:5001/Airport/";
         static readonly HttpClient client = new HttpClient();
 
         public async Task<AirportDTO> GetIata(string iata)
@@ -25,14 +24,14 @@ namespace Services
             }
         }
 
-        public async Task<List<AirportPestanic>> GetState(string state)
+        public async Task<List<AirportDTO>> GetState(string state)
         {
             try
             {
                 HttpResponseMessage response = await client.GetAsync(url + $"/ByState/{state}");
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<AirportPestanic>>(flight);
+                return JsonConvert.DeserializeObject<List<AirportDTO>>(flight);
             }
             catch (HttpRequestException e)
             {
@@ -40,14 +39,14 @@ namespace Services
             }
         }
 
-        public async Task<List<AirportPestanic>> GetCityCode(string cityCode)
+        public async Task<List<AirportDTO>> GetCityCode(string cityCode)
         {
             try
             {
                 HttpResponseMessage response = await client.GetAsync(url + $"/ByCity/{cityCode}");
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<AirportPestanic>>(flight);
+                return JsonConvert.DeserializeObject<List<AirportDTO>>(flight);
             }
             catch (HttpRequestException e)
             {
@@ -55,14 +54,14 @@ namespace Services
             }
         }
 
-        public async Task<List<AirportPestanic>> GetCity(string city)
+        public async Task<List<AirportDTO>> GetCity(string city)
         {
             try
             {
                 HttpResponseMessage response = await client.GetAsync(url + $"/ByCityName/{city}");
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<AirportPestanic>>(flight);
+                return JsonConvert.DeserializeObject<List<AirportDTO>>(flight);
             }
             catch (HttpRequestException e)
             {
@@ -70,14 +69,14 @@ namespace Services
             }
         }
 
-        public async Task<List<AirportPestanic>> GetIcao(string icao)
+        public async Task<List<AirportDTO>> GetIcao(string icao)
         {
             try
             {
                 HttpResponseMessage response = await client.GetAsync(url + $"/ByIcao/{icao}");
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<List<AirportPestanic>>(flight);
+                return JsonConvert.DeserializeObject<List<AirportDTO>>(flight);
             }
             catch (HttpRequestException e)
             {

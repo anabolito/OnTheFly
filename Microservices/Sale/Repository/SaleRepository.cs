@@ -52,13 +52,19 @@ namespace SaleAPI.Repository
         #endregion
 
         #region Post
-        public async Task<bool> PostSalesAsync([FromBody] SaleDTO saleDTO)
+        public async Task<Sale> PostSalesAsync([FromBody] SaleDTO saleDTO)
         {
 
-            Flight flight = _flightService.Get(saleDTO.IataFlight, saleDTO.RabFlight, saleDTO.DtDepartureFlight).Result;
+            var flight = _flightService.Get(saleDTO.IataFlight, saleDTO.RabFlight, saleDTO.DtDepartureFlight).Result;
 
             List<Passenger> passengerList = new();
-            saleDTO.Cpf.ForEach(async c =>  passengerList.Add(_passengerService.GetByCPF(c).Result));
+            foreach(var item in saleDTO.Cpf)
+            {
+                passengerList.Add(_passengerService.GetByCPF(item).Result);
+            }
+
+
+            //saleDTO.Cpf.ForEach(async c =>  passengerList.Add(_passengerService.GetByCPF(c).Result));
 
             Sale sale = new()
             {
@@ -80,10 +86,10 @@ namespace SaleAPI.Repository
             //}
 
             if (sale.Passengers.GroupBy(x => x).Any(p => p.Count() > 1))
-                return false;
+                return null;
 
             if (sale.Sold == sale.Reserved)
-                return false;
+                return null;
 
             if ((sale.Sold == true) && (sale.Reserved == false))
                 QUEUE_NAME = "sold";
@@ -114,7 +120,7 @@ namespace SaleAPI.Repository
                         );
                 }
             }
-            return true;
+            return sale;
         }
         #endregion
 
