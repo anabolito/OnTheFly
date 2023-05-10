@@ -46,9 +46,8 @@ namespace PassengerAPI.Repositories
             if (restrictedPassengers.Count != 0) allPassengers.AddRange(restrictedPassengers);
 
             if (allPassengers.Count != 0) return allPassengers;
-            
-            else throw new BadHttpRequestException("Não existem passageiros cadastrados!");
 
+            return null;
             //Console.WriteLine("Não existem passageiros cadastrados!");
         }
 
@@ -80,7 +79,7 @@ namespace PassengerAPI.Repositories
             if (underAgePassengers.Count == 0)
             {
                 Console.WriteLine("Não existem passageiros menores de idade!");
-                throw new BadHttpRequestException("Não existem passageiros menores de idade!");
+                return null;
             }
 
             return underAgePassengers;
@@ -93,7 +92,7 @@ namespace PassengerAPI.Repositories
             if (restrictedOnes.Count == 0)
             {
                 Console.WriteLine("Não existem passageiros restritos!");
-                throw new BadHttpRequestException("Não existem passageiros restritos!");
+                return null;
             }
 
             return restrictedOnes;
@@ -106,7 +105,7 @@ namespace PassengerAPI.Repositories
             if (deletedOnes.Count == 0)
             {
                 Console.WriteLine("Não existem passageiros desativados!");
-                throw new BadHttpRequestException("Não existem passageiros desativados!");
+                return null;
             }
 
             return deletedOnes;
@@ -126,18 +125,15 @@ namespace PassengerAPI.Repositories
 
         #endregion
         #region[U]
-        public Passenger UpdatePassengerAddress(string _id, string cep)
+        public Passenger UpdatePassengerAddress(string _id, string cep, int number, string complement)
         {
             var passenger = _customPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             PostOffice _postOffice = new();
-            var dto = _postOffice.GetAddress(cep).Result;
-            var number = 0;
-            var complement = "";
+            var dto = _postOffice.GetAddress(cep).Result;    
 
             if (passenger != null)
             {
-
                 var address = new Address()
                 {
                     Number = number,
@@ -341,7 +337,7 @@ namespace PassengerAPI.Repositories
                 await _restrictedPassenger.DeleteOneAsync(p => p.CPF == _id);
                 return restrictedPassenger;
             }
-            return new Passenger();
+            return null;
         }
         #endregion
 
@@ -361,7 +357,7 @@ namespace PassengerAPI.Repositories
                 await _unactivatedPassenger.DeleteOneAsync(p => p.CPF == _id);
                 return unactivated;
             }
-            return new Passenger();
+            return null;
         }
         private int CalculateAge(DateTime bd)
         {
