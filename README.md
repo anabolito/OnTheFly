@@ -7,3 +7,4 @@ aeroporto denominado ON THE FLY. Os módulos são referentes aos controles de:
 • Venda de Passagens 
 
 ![FuxProjFinal drawio (1)](https://github.com/anabolito/OnTheFly/assets/115516234/8eef2704-47f9-4c86-875a-43337ba65b73)
+![image](https://github.com/anabolito/OnTheFly/assets/115516234/d875a9d2-21f6-4537-885a-f1fdd7c06fcc)
