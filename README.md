@@ -1,6 +1,6 @@
 # OnTheFly
 O projeto OnTheFly apresenta informações sobre um projeto que controlará as vendas de passagens áreas de um 
-aeroporto denominado ON THE FLY. Os módulos são referentes aos controles de: 
+aeroporto denominado ON THE FLY. Os módulos estão em API e utilizando a plataforma de aplicação de dados MongoDB, estes são referentes aos controles de: 
 • Passageiros 
 • Companhias Aéreas 
 • Vôos Agendados 
