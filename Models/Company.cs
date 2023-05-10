@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace Models
     public class Company
     {
         [BsonId]
+        //[BsonElement("_id")]
+        //[JsonProperty("_id")]
         [BsonRepresentation(BsonType.String)]
         public string CNPJ { get; set; }
         public string Name { get; set; }

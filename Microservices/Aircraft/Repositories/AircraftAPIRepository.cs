@@ -1,4 +1,5 @@
-﻿using AircraftAPI.Config;
+﻿using System.Net;
+using AircraftAPI.Config;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using MongoDB.Bson;
@@ -27,11 +28,22 @@ namespace AircraftAPI.Services
 
         public List<Aircraft> Get()
         {
-            return _aircraft.Find(c => true).ToList();
+            if (_aircraft.Find(c => true).ToList().Count == 0)
+            {
+                throw new BadHttpRequestException("Não há aeronaves cadastradas.");
+            }
+            var list = new List<Aircraft>();
+            list = _aircraft.Find(c => true).ToList();
+            return list;        
         }
 
         public int GetCapacity(string id)
         {
+            if(_aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault() == null)
+            {
+                throw new BadHttpRequestException("Aeronave não encontrada.");
+            }
+
             Aircraft a = new Aircraft();
             a = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
 
@@ -40,11 +52,18 @@ namespace AircraftAPI.Services
 
         public Aircraft Get(string id)
         {
-            return _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
+            if (_aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault() == null)
+            {
+                throw new BadHttpRequestException("Aeronave não encontrada.");
+            }
+            var aircraft = new Aircraft();
+            aircraft = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
+            return aircraft;
         }
 
-        public async Task<ActionResult> Create(Aircraft aircraft)
+        public async Task<Aircraft> Create(Aircraft aircraft)
         {
+            
             Company company = new Company();
             company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
             aircraft.Company = company;
@@ -58,12 +77,12 @@ namespace AircraftAPI.Services
                         string s = aircraft.RAB.ToUpper();
                         aircraft.RAB = s;
                         _aircraft.InsertOne(aircraft);
-                        return new OkResult();  
+                        return  aircraft;
                     }
                 }
             }
 
-            return new NotFoundResult();
+            return null;
         }
 
         public ActionResult UpdateDtLastFlight(string id, Aircraft aircraft)
@@ -72,7 +91,7 @@ namespace AircraftAPI.Services
 
             if (c == null)
             {
-                return new NotFoundResult();
+                throw new BadHttpRequestException("Aeronave não encontrada.");
             }
 
             c.DtLastFlight = aircraft.DtLastFlight;
@@ -81,42 +100,42 @@ namespace AircraftAPI.Services
             return new OkResult();
         }
 
-        public async Task<ActionResult> UpdateCompany(string id, Aircraft aircraft)
+        public async Task<Aircraft> UpdateCompany(string rab, Aircraft aircraft)
         {
-            var c = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
+            var c = _aircraft.Find<Aircraft>(c => c.RAB == rab).FirstOrDefault();
 
             if (c == null)
             {
-                return new NotFoundResult();
+                 throw new BadHttpRequestException("Aeronave não encontrada.");
             }
 
-            Company company = new Company();
-            company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
+            //Company company = new Company();
+            var company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
             c.Company = company;
 
-            if(c.Company.Status == true)
+            if (c.Company.Status == true)
             {
-                _aircraft.ReplaceOne(c => c.RAB == aircraft.RAB, c);
-                return new OkResult();
+               _aircraft.ReplaceOne(c => c.RAB == aircraft.RAB, c);
+                return c;
             }
 
-            return new NotFoundResult();
+            return null;
         }
 
-        public ActionResult Delete(string id)
+        public void Delete(string id)
         {
             if (id == null)
             {
-                return new NotFoundResult();
+                throw new BadHttpRequestException("Aeronave não encontrada.");
             }
             var aircraft = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
             if (aircraft == null)
             {
-                return new NotFoundResult();
+                throw new BadHttpRequestException("Aeronave não encontrada.");
             }
             _deletedAircraft.InsertOne(aircraft);
             _aircraft.DeleteOne(c => c.RAB == id);
-            return new OkResult();
+            
         }
 
         // metodos de validacao do numero RAB
