@@ -11,6 +11,7 @@ namespace Models
     public class Company
     {
         [BsonId]
+        //[BsonElement("_id")]
         [BsonRepresentation(BsonType.String)]
         public string CNPJ { get; set; }
         public string Name { get; set; }
