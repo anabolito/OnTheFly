@@ -5,7 +5,7 @@ namespace PassengerAPI.Service
     public static class ValidateDocument 
     {
         #region[ValidateDoc]
-        public static bool ValidateCPF(string cpf, string cpfToVerify)      
+        public static bool ValidateCPF(string cpf,string cpfToVerify)      
         {
             if (!ValidateCPFIfFormatIsCorrect(cpf))
             {
