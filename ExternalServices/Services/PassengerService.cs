@@ -16,8 +16,23 @@ namespace Services
         static readonly string url = "https://localhost:7264/api/Passenger/Passengers/";
         static readonly HttpClient client = new HttpClient();
 
-        [HttpGet("Passengers")]
+        [HttpGet("GetAllActives")]
         public async Task<List<Passenger>> Get()
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<List<Passenger>>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+        [HttpGet("UnderAgeOnes")]
+        public async Task<List<Passenger>> GetAllMinors()
         {
             try
             {
@@ -46,10 +61,10 @@ namespace Services
             {
                 throw new(e.Message);
             }
-        }
+        }        
 
-        [HttpGet("UnderAgeOnes")]
-        public async Task<List<Passenger>> GetAllMinors()
+        [HttpGet("RestrictedOnes")]
+        public async Task<List<Passenger>> GetRestrictedOnes()
         {
             try
             {
@@ -79,7 +94,7 @@ namespace Services
                 throw new(e.Message);
             }
         }
-       
+
         [HttpPost]
         public async Task<Passenger> Post(PassengerDTO passengerDTO, int number, string complement)
         {
@@ -234,6 +249,38 @@ namespace Services
             }
         }
 
+        [HttpPut("{id}/SetRestrict")]
+        public async Task<Passenger> SetPassengerAsRestricted(string id)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url, id);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Passenger>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+
+        [HttpPut("{id}/SetUnrestrict")]
+        public async Task<Passenger> SetPassengerAsUnRestricted(string id)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url, id);
+                response.EnsureSuccessStatusCode();
+                string passenger = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Passenger>(passenger);
+            }
+            catch (HttpRequestException e)
+            {
+                throw new(e.Message);
+            }
+        }
+
         [HttpPut("{id}/Reactivate")]
         public async Task<Passenger> ReactivatePassenger(string id)
         {
@@ -250,7 +297,7 @@ namespace Services
             }
         }
                 
-        [HttpDelete("{id}/Delete")]
+        [HttpDelete("{id}/Desactivate")]
         public async Task<Passenger> Delete(string id)
         {
             try
