@@ -10,11 +10,10 @@ namespace PassengerAPI.DTO
         public string Name { get; set; }       
         public char Gender { get; set; }        
         public string? Phone { get; set; }        
-        public DateTime DtBirth { get; set; }
-        public DateTime DtRegistry { get; set; }        
+        public DateTime DtBirth { get; set; }               
         public bool? Status { get; set; }        
         public string CEP { get; set; } 
         public int Number { get; set; }
-        public string Complement { get; set; }
+        public string Complement { get; set; }        
     }
 }

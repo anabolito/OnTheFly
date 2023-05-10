@@ -81,7 +81,7 @@ namespace Services
             }
         }
 
-        [HttpGet("CPF")]
+        [HttpGet("cpf")]
         public async Task<Passenger> GetByCPF(string cpf)
         {
             try
@@ -138,7 +138,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/{Address}/CPF")]
+        [HttpPut("/{Address}/{cpf}")]
         public async Task<Passenger> UpdatePassengerAddress(string cpf, int number, string? complement, string cep)
         {
             try
@@ -154,7 +154,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/Street/CPF")]
+        [HttpPut("/Street/{cpf}")]
         public async Task<Passenger> UpdatePassengerAddressStreet(string cpf, string streetName)   {
             try
             {
@@ -169,7 +169,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/{Name}/CPF")]
+        [HttpPut("/{Name}/{cpf}")]
         public async Task<Passenger> UpdatePassengerName(string cpf, string name)
         {
             try
@@ -185,7 +185,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/Gen/CPF")]
+        [HttpPut("/Gen/{cpf}")]
         public async Task<Passenger> UpdatePassengerGender(string cpf, char gen)
         {
             try
@@ -201,7 +201,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/Phone/CPF")]
+        [HttpPut("/Phone/{cpf}")]
         public async Task<Passenger> UpdatePassengerPhone(string cpf, string phone)
         {
             try
@@ -217,7 +217,7 @@ namespace Services
             }
         }       
 
-        [HttpPut("/Status/CPF")]
+        [HttpPut("/Status/{cpf}")]
         public async Task<Passenger> UpdatePassengerStatus(string cpf, bool stat)
         {
             try
@@ -233,7 +233,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/SetRestrict/CPF")]
+        [HttpPut("/SetRestrict/{cpf}")]
         public async Task<Passenger> SetPassengerAsRestricted(string cpf)
         {
             try
@@ -249,7 +249,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/SetUnrestrict/CPF")]
+        [HttpPut("/SetUnrestrict/{cpf}")]
         public async Task<Passenger> SetPassengerAsUnRestricted(string cpf)
         {
             try
@@ -265,7 +265,7 @@ namespace Services
             }
         }
 
-        [HttpPut("/Reactivate/CPF")]
+        [HttpPut("/Reactivate/{cpf}")]
         public async Task<Passenger> ReactivatePassenger(string cpf)
         {
             try
@@ -281,7 +281,7 @@ namespace Services
             }
         }
                 
-        [HttpDelete("/Desactivate/CPF")]
+        [HttpDelete("/Desactivate/{cpf}")]
         public async Task<Passenger> Delete(string cpf)
         {
             try
