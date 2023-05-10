@@ -68,7 +68,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("CPF")]
+        [HttpGet("{cpf}")]
         public ActionResult<Passenger> GetByCPF(string cpf)
         {
             var passenger = _passengerService.GetByCPF(cpf);
@@ -119,7 +119,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Address/CPF")]
+        [HttpPut("/Address/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerAddress(string cpf, string cep)
         {
             var passenger = _passengerService.UpdatePassengerAddress(cpf, cep);
@@ -132,7 +132,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Street/CPF")]
+        [HttpPut("/Street/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerAddressStreet(string cpf, string streetName)
         {
             var passenger = _passengerService.UpdatePassengerAddressStreet(cpf, streetName);
@@ -145,7 +145,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Name/CPF")]
+        [HttpPut("/Name/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerName(string cpf, string name)
         {
             var passenger = _passengerService.UpdatePassengerName(cpf, name);
@@ -158,7 +158,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Gen/CPF")]
+        [HttpPut("/Gen/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerGender(string cpf, char gen)
         {
             var passenger = _passengerService.UpdatePassengerGender(cpf, gen);
@@ -171,7 +171,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Phone/CPF")]
+        [HttpPut("/Phone/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerPhone(string cpf, string phone)
         {
             var passenger = _passengerService.UpdatePassengerPhone(cpf, phone);
@@ -184,7 +184,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Status/{CPF}")]
+        [HttpPut("/Status/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerStatus(string cpf)
         {
             var passenger = _passengerService.UpdatePassengerStatus(cpf);
@@ -197,7 +197,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/SetRestrict/{CPF}")]
+        [HttpPut("/SetRestrict/{cpf}")]
         public ActionResult<Passenger> SetPassengerAsRestricted(string cpf)
         {
             var passenger = _passengerService.SetPassengerAsRestricted(cpf);
@@ -210,7 +210,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/SetUnrestrict/{CPF}")]
+        [HttpPut("/SetUnrestrict/{cpf}")]
         public ActionResult<Passenger> SetPassengerAsUnrestricted(string cpf)
         {
             var passenger = _passengerService.SetPassengerAsUnrestricted(cpf);
@@ -223,7 +223,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("/Reactivate/{CPF}")]
+        [HttpPut("/Reactivate/{cpf}")]
         public ActionResult<Passenger> ReactivatePassenger(string cpf)
         {
             var passenger =_passengerService.ReativatePassenger(cpf);
@@ -235,7 +235,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("/Desactivate/{CPF}")]
+        [HttpDelete("/Desactivate/{cpf}")]
         public ActionResult <Passenger>Delete(string cpf)
         {
             var passenger = _passengerService.Delete(cpf);
