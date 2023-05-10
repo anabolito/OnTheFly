@@ -72,7 +72,9 @@ namespace PassengerAPI.Controllers
         public ActionResult<Passenger> GetByCPF(string cpf)
         {
             var passenger = _passengerService.GetByCPF(cpf);
-            if (passenger == null) return new Passenger();
+            if (!ValidateDocument.ValidateCPF(passenger.CPF, passenger.CPF)) return BadRequest("CPF Inválido!");
+            if (passenger == null) return NotFound("Passageiro não encontrado!");
+
             return Ok(passenger);
         }
 
