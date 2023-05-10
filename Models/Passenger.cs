@@ -26,7 +26,7 @@ namespace Models
         public DateTime DtBirth { get; set; }
 
         [BsonElement("DtRegistry")]
-        public DateTime DtRegistry { get; set; }
+        public DateTime DtRegistry { get; set; } 
 
         [BsonElement("Status")]
         public bool? Status { get; set; }
@@ -45,7 +45,7 @@ namespace Models
             Gender = char.ToUpper(dto.Gender);
             Phone = dto.Phone;
             DtBirth = dto.DtBirth;
-            DtRegistry = dto.DtRegistry;
+            DtRegistry = DateTime.Now;
             Status = dto.Status;
             Address = address;
         }

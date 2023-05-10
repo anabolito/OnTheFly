@@ -25,8 +25,7 @@ namespace PassengerAPI.DTO
         public string? ZipCode { get; set; }
 
         public AddressDTO(string? street, string? complement, string? neighborhood, string? city, string? state, string? zipCode)
-        {
-            //Id = id;
+        {            
             Street = street;
             Complement = complement;
             Neighborhood = neighborhood;
