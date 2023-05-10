@@ -100,17 +100,17 @@ namespace AircraftAPI.Services
             return new OkResult();
         }
 
-        public async Task<Aircraft> UpdateCompany(string id, Aircraft aircraft)
+        public async Task<Aircraft> UpdateCompany(string rab, Aircraft aircraft)
         {
-            var c = _aircraft.Find<Aircraft>(c => c.RAB == id).FirstOrDefault();
+            var c = _aircraft.Find<Aircraft>(c => c.RAB == rab).FirstOrDefault();
 
             if (c == null)
             {
                  throw new BadHttpRequestException("Aeronave não encontrada.");
             }
 
-            Company company = new Company();
-            company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
+            //Company company = new Company();
+            var company = await _companyService.GetByCnpj(aircraft.Company.CNPJ);
             c.Company = company;
 
             if (c.Company.Status == true)
