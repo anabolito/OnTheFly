@@ -31,7 +31,7 @@ namespace SaleAPI.Controllers
         [HttpPost]
         public ActionResult<Sale> PostSale(SaleDTO saleDTO)
         {
-            var sale =  _salesRepository.PostSalesAsync(saleDTO).Result;
+            var sale =  _salesRepository.PostSalesAsync(saleDTO).Result; 
             if (sale != null)
                 return Ok(sale);
             else
