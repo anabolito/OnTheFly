@@ -75,16 +75,16 @@ namespace SaleAPI.Repository
                 Sold = saleDTO.Sold
             };
 
-            //int date = CalcularIdade(sale.Passengers[0].DtBirth);
+            int date = CalcularIdade(sale.Passengers[0].DtBirth);
 
-            //if (date < 18)
-            //    return false;
+            if (date < 18)
+                return null;
 
-            //foreach (var item in sale.Passengers)
-            //{
-            //    if (item.Status == false)
-            //        return false;
-            //}
+            foreach (var item in sale.Passengers)
+            {
+                if (item.Status == false)
+                    return null;
+            }
 
             if (sale.Passengers.GroupBy(x => x).Any(p => p.Count() > 1))
                 return null;

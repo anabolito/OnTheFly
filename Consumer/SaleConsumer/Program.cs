@@ -43,8 +43,6 @@ using (var connection = factory.CreateConnection())
                     throw;
                 }
 
-
-
             };
 
             channel.BasicConsume(queue: QUEUE_NAME,
