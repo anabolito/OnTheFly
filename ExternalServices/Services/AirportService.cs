@@ -1,4 +1,5 @@
 ﻿using AirportAPI.Models;
+using Models.DTOs;
 using Newtonsoft.Json;
 
 namespace Services
@@ -8,18 +9,19 @@ namespace Services
         private readonly string url = "https://localhost:44366/Airport/";
         static readonly HttpClient client = new HttpClient();
 
-        public async Task<AirportPestanic> GetIata(string iata)
+        public async Task<AirportDTO> GetIata(string iata)
         {
             try
             {
                 HttpResponseMessage response = await client.GetAsync(url + iata);
                 response.EnsureSuccessStatusCode();
                 string flight = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<AirportPestanic>(flight);
+                return JsonConvert.DeserializeObject<AirportDTO>(flight);
             }
             catch (HttpRequestException e)
             {
-                return null;
+                await Console.Out.WriteLineAsync(e.ToString());
+                throw;
             }
         }
 
