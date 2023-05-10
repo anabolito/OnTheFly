@@ -6,6 +6,7 @@ namespace Models
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        [BsonIgnore]
         public string Id { get; set; }
 
         [BsonElement("Flight")]

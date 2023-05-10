@@ -68,6 +68,7 @@ namespace SaleAPI.Repository
 
             Sale sale = new()
             {
+                Id = null,
                 Flight = flight,
                 Passengers = passengerList,
                 Reserved = saleDTO.Reserved,
