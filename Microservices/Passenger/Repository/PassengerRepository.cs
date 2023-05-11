@@ -278,19 +278,16 @@ namespace PassengerAPI.Repositories
             if (passenger != null)
             {
                 if (passenger.Status == true) passenger.Status = false;
-                else passenger.Status = true;
-                if (passenger.Status == false) passenger.Status = true;
-                else passenger.Status= false;
-
+                else if (passenger.Status == false) passenger.Status = true;
+                _customPassenger.ReplaceOne(p => p.CPF == _id, passenger);
                 return passenger;
             }
 
             if (restrictedPassenger != null)
             {
                 if (restrictedPassenger.Status == true) restrictedPassenger.Status = false;
-                else restrictedPassenger.Status = true;
-                if (restrictedPassenger.Status == false) restrictedPassenger.Status = true;
-                else restrictedPassenger.Status = false;
+                else if (restrictedPassenger.Status == false) restrictedPassenger.Status = true ;
+                _restrictedPassenger.ReplaceOne(p => p.CPF == _id, passenger);
                 return restrictedPassenger;
             }
             return null;
