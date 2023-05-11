@@ -278,7 +278,9 @@ namespace PassengerAPI.Repositories
             if (passenger != null)
             {
                 if (passenger.Status == true) passenger.Status = false;
+                else passenger.Status = true;
                 if (passenger.Status == false) passenger.Status = true;
+                else passenger.Status= false;
 
                 return passenger;
             }
@@ -286,8 +288,9 @@ namespace PassengerAPI.Repositories
             if (restrictedPassenger != null)
             {
                 if (restrictedPassenger.Status == true) restrictedPassenger.Status = false;
+                else restrictedPassenger.Status = true;
                 if (restrictedPassenger.Status == false) restrictedPassenger.Status = true;
-
+                else restrictedPassenger.Status = false;
                 return restrictedPassenger;
             }
             return null;

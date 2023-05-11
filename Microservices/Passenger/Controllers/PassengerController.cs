@@ -37,7 +37,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("UnderAgeOnes")]
+        [HttpGet("/Passenger/UnderAgeOnes")]
         public ActionResult<List<Passenger>> GetAllMinors()
         {
             var minors = _passengerService.GetAllMinors();
@@ -49,7 +49,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("Inactives")]
+        [HttpGet("/Passenger/Inactives")]
         public ActionResult<List<Passenger>> GetDeletedOnes()
         {
             var inactives = _passengerService.GetDeletedOnes();
@@ -61,7 +61,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("RestrictedOnes")]
+        [HttpGet("/Passenger/RestrictedOnes")]
         public ActionResult<List<Passenger>> GetRestrictedOnes()
         {
             var restricted =_passengerService.GetRestrictedOnes();
@@ -73,7 +73,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpGet("{cpf}")]
+        [HttpGet("/Passenger/{cpf}")]
         public ActionResult<Passenger> GetByCPF(string cpf)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -87,7 +87,7 @@ namespace PassengerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("Create")]
+        [HttpPost("/Passenger/Create")]
         public ActionResult<Passenger> Post(PassengerDTO passengerDTO)
         {
             var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
@@ -126,7 +126,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Address/number/complement/{cpf}")]
+        [HttpPut("/Passenger/Address/number/complement/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerAddress(string cpf, string cep, int number, string complement)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -141,7 +141,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Street/{cpf}")]
+        [HttpPut("/Passenger/Street/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerAddressStreet(string cpf, string streetName)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -156,7 +156,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Name/{cpf}")]
+        [HttpPut("/Passenger/Name/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerName(string cpf, string name)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -171,7 +171,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Gen/{cpf}")]
+        [HttpPut("/Passenger/Gen/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerGender(string cpf, char gen)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -186,7 +186,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Phone/{cpf}")]
+        [HttpPut("/Passenger/Phone/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerPhone(string cpf, string phone)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -201,7 +201,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Status/{cpf}")]
+        [HttpPut("/Passenger/Status/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerStatus(string cpf)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -216,7 +216,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/SetRestrict/{cpf}")]
+        [HttpPut("/Passenger/SetRestrict/{cpf}")]
         public ActionResult<Passenger> SetPassengerAsRestricted(string cpf)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -231,7 +231,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/SetUnrestrict/{cpf}")]
+        [HttpPut("/Passenger/SetUnrestrict/{cpf}")]
         public ActionResult<Passenger> SetPassengerAsUnrestricted(string cpf)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -246,7 +246,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpPut("/Reactivate/{cpf}")]
+        [HttpPut("/Passenger/Reactivate/{cpf}")]
         public ActionResult<Passenger> ReactivatePassenger(string cpf)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
@@ -260,7 +260,7 @@ namespace PassengerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [HttpDelete("/Desactivate/{cpf}")]
+        [HttpDelete("/Passenger/Desactivate/{cpf}")]
         public ActionResult <Passenger>Delete(string cpf)
         {
             if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
