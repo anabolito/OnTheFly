@@ -14,6 +14,6 @@ namespace PassengerAPI.DTO
         public bool? Status { get; set; }        
         public string CEP { get; set; } 
         public int Number { get; set; }
-        public string Complement { get; set; }        
+        public string? Complement { get; set; }        
     }
 }

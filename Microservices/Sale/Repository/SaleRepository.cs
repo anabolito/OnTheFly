@@ -64,8 +64,6 @@ namespace SaleAPI.Repository
             }
 
 
-            //saleDTO.Cpf.ForEach(async c =>  passengerList.Add(_passengerService.GetByCPF(c).Result));
-
             Sale sale = new()
             {
                 Id = null,
@@ -90,6 +88,9 @@ namespace SaleAPI.Repository
                 return null;
 
             if (sale.Sold == sale.Reserved)
+                return null;
+
+            if (passengerList.Count() > (sale.Flight.Plane.Capacity - sale.Flight.Sales))
                 return null;
 
             if ((sale.Sold == true) && (sale.Reserved == false))
@@ -121,6 +122,9 @@ namespace SaleAPI.Repository
                         );
                 }
             }
+            sale.Flight.Sales += passengerList.Count();
+
+            await _flightService.PutSalesCountAsync(sale.Flight.Arrival.IATA, sale.Flight.Plane.RAB, saleDTO.DtDepartureFlight, sale.Flight.Sales);
             return sale;
         }
         #endregion

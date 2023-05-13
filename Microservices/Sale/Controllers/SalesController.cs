@@ -20,8 +20,8 @@ namespace SaleAPI.Controllers
         #endregion
 
         #region Get
-        //[HttpGet]
-        //public ActionResult<List<Sale>> GetSales() => _salesRepository.GetSalesAsync().Result;
+        [HttpGet]
+        public ActionResult<List<Sale>> GetSales() => _salesRepository.GetSalesAsync().Result;
 
         //[HttpGet("{departure}")]
         //public ActionResult<List<Sale>> GetFlight() => _salesRepository.GetSalesAsync().Result;
@@ -35,7 +35,7 @@ namespace SaleAPI.Controllers
             if (sale != null)
                 return Ok(sale);
             else
-                return BadRequest();
+                return BadRequest("Não foi possível cadastrar a venda");
         }
         #endregion
 

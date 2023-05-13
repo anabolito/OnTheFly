@@ -68,10 +68,9 @@ namespace FlightAPI.Repositories
         public async Task<Flight> PostFlightAsync(FlightDTO flightDTO)
         {
             var destinyAirport = await _airportService.GetIata(flightDTO.IataDestiny);
-            var departureAirport = _airportService.GetIata(flightDTO.IataDeparture).Result;
             var plane = _aircraftService.GetById(flightDTO.RabPlane).Result;
 
-            if ((destinyAirport == null) || (departureAirport == null) || (plane == null))
+            if ((destinyAirport == null) || (plane == null))
                 return null;
 
             if (!plane.Company.Status)
@@ -85,18 +84,8 @@ namespace FlightAPI.Repositories
                 Country= destinyAirport.country_id
             };
 
-            Airport departure = new()
-            {
-                IATA = departureAirport.iata,
-                City = departureAirport.city,
-                State = departureAirport.state,
-                Country = departureAirport.country_id
-            }; ;
-
-
             Flight flight = new()
             {
-                Departure = departure,
                 Arrival = destiny,
                 DtDeparture = flightDTO.DtDeparture,
                 Plane = plane,
@@ -140,6 +129,30 @@ namespace FlightAPI.Repositories
             return canceled;
         }
 
+        public async Task<Flight> PutFlightAsync(string iata, string rab, string departure, int count)
+        {
+            var decodedDate = HttpUtility.UrlDecode(departure);
+            var date = DateTime.ParseExact(decodedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var greater = Builders<Flight>.Filter.Gte(f => f.DtDeparture, date);
+            var less = Builders<Flight>.Filter.Lt(f => f.DtDeparture, date.AddDays(1));
+
+            var builder = Builders<Flight>.Filter;
+            var airport = builder.Eq(f => f.Arrival.IATA, iata);
+            var plane = builder.Eq(f => f.Plane.RAB, rab);
+
+            var filter = builder.And(airport, plane, greater, less);
+
+            var flight = _flights.FindAsync(filter).Result.FirstOrDefault();
+
+            if (flight != null)
+            {
+                flight.Sales += count;
+                await _flights.ReplaceOneAsync(filter, flight);
+            }
+
+            return flight;
+        }
+
         public async Task<bool> DeleteFlightAsync(string iata, string rab, string departure)
         {
             #region Filter
@@ -163,13 +176,6 @@ namespace FlightAPI.Repositories
             await _flights.DeleteOneAsync(filter);
 
             return true;
-        }
-
-        public int GetCapacity(Flight flight) => flight.Plane.Capacity;
-
-        public void QuantityAvaiableTickets(Sale sale)
-        {
-            sale.Flight.Sales += sale.Passengers.Count();
         }
         
     }

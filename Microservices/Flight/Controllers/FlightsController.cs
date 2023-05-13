@@ -1,4 +1,5 @@
-﻿using FlightAPI.Repositories;
+﻿using Amazon.Runtime.Internal;
+using FlightAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Models.DTOs;
@@ -55,7 +56,7 @@ namespace FlightAPI.Controllers
             if (_flightRepository.PostFlightAsync(flight).Result != null)
                 return StatusCode(201, flight);
             else
-                return BadRequest();
+                return BadRequest(new BadHttpRequestException("Não foi possível cadastrar o vôo"));
         }
         
         [HttpPut("{iata}/{rab}/{date}")]
@@ -69,7 +70,23 @@ namespace FlightAPI.Controllers
             if (flight != null)
                 return StatusCode(201, flight);
             else
-                return BadRequest();
+                return BadRequest(new BadHttpRequestException("Não foi possível cancelar o vôo"));
+        }
+
+        [HttpPut("Count/{iata}/{rab}/{date}", Name = "UpdateSalesCount")]
+        public ActionResult<Flight> PutFlight(string iata, string rab, string date, int count)
+        {
+            var flight = _flightRepository.GetFlightAsync(iata, rab, date).Result;
+            if (flight == null)
+                return NotFound();
+
+
+            var aux = _flightRepository.PutFlightAsync(iata, rab, date, count).Result;
+
+            if (flight != null)
+                return StatusCode(201, flight);
+            else
+                return BadRequest(new BadHttpRequestException("Não foi possível alterar o vôo"));
         }
 
         [HttpDelete("{iata}/{rab}/{date}")]
@@ -78,7 +95,7 @@ namespace FlightAPI.Controllers
             if (_flightRepository.DeleteFlightAsync(iata, rab, date).Result)
                 return Ok();
             else
-                return NotFound();
+                return NotFound("Não vôo encontrado");
         }
 
     }

@@ -13,9 +13,6 @@ namespace Models
         [BsonElement("Arrival")]
         public Airport Arrival { get; set; }
 
-        [BsonElement("Departure")]
-        public Airport Departure{ get; set; }
-
         [BsonElement("Plane")]
         public Aircraft Plane { get; set; }
 

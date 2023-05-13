@@ -9,7 +9,6 @@ namespace Models.DTOs
     public class FlightDTO
     {
         public string IataDestiny { get; set; }
-        public string IataDeparture { get; set; }
         public string RabPlane { get; set; }
         public DateTime DtDeparture { get; set; }
         public bool Status { get; set; }

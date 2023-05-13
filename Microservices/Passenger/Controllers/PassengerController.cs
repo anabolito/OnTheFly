@@ -76,7 +76,7 @@ namespace PassengerAPI.Controllers
         [HttpGet("{cpf}")]
         public ActionResult<Passenger> GetByCPF(string cpf)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.GetByCPF(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -91,7 +91,7 @@ namespace PassengerAPI.Controllers
         public ActionResult<Passenger> Post(PassengerDTO passengerDTO)
         {
             var dto = _postOffice.GetAddress(passengerDTO.CEP).Result;
-            if (!ValidateDocument.ValidateCPF(passengerDTO.CPF, passengerDTO.CPF)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(passengerDTO.CPF)) return BadRequest("CPF Inválido!");
 
             var number = 0;
             var complement = "";
@@ -129,7 +129,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Address/number/complement/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerAddress(string cpf, string cep, int number, string complement)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.UpdatePassengerAddress(cpf, cep, number, complement);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -144,7 +144,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Street/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerAddressStreet(string cpf, string streetName)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.UpdatePassengerAddressStreet(cpf, streetName);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -159,7 +159,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Name/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerName(string cpf, string name)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.UpdatePassengerName(cpf, name);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -174,7 +174,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Gen/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerGender(string cpf, char gen)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.UpdatePassengerGender(cpf, gen);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -189,7 +189,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Phone/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerPhone(string cpf, string phone)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.UpdatePassengerPhone(cpf, phone);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -204,7 +204,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Status/{cpf}")]
         public ActionResult<Passenger> UpdatePassengerStatus(string cpf)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.UpdatePassengerStatus(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -219,7 +219,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/SetRestrict/{cpf}")]
         public ActionResult<Passenger> SetPassengerAsRestricted(string cpf)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.SetPassengerAsRestricted(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -234,7 +234,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/SetUnrestrict/{cpf}")]
         public ActionResult<Passenger> SetPassengerAsUnrestricted(string cpf)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.SetPassengerAsUnrestricted(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
 
@@ -249,7 +249,7 @@ namespace PassengerAPI.Controllers
         [HttpPut("/Reactivate/{cpf}")]
         public ActionResult<Passenger> ReactivatePassenger(string cpf)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger =_passengerService.ReativatePassenger(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
             return Ok(passenger);
@@ -263,7 +263,7 @@ namespace PassengerAPI.Controllers
         [HttpDelete("/Desactivate/{cpf}")]
         public ActionResult <Passenger>Delete(string cpf)
         {
-            if (!ValidateDocument.ValidateCPF(cpf, cpf)) return BadRequest("CPF Inválido!");
+            if (!ValidateDocument.ValidateCPF(cpf)) return BadRequest("CPF Inválido!");
             var passenger = _passengerService.Delete(cpf);
             if (passenger == null) return NotFound("Passageiro não encontrado!");
             return Ok(passenger);

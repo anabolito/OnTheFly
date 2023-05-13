@@ -8,6 +8,7 @@ using System.Web;
 using Models;
 using Models.DTOs;
 using Newtonsoft.Json;
+using static System.Net.WebRequestMethods;
 
 namespace Services
 {
@@ -66,7 +67,6 @@ namespace Services
         public async Task<Flight> Post(FlightDTO flightDTO)
         {
             var destinyPestanic = new AirportService().GetIata(flightDTO.IataDestiny).Result;
-            var departurePestanic = new AirportService().GetIata(flightDTO.IataDeparture).Result;
             var plane = new AircraftService().GetById(flightDTO.RabPlane).Result;
 
             Airport destiny = new Airport()
@@ -77,21 +77,12 @@ namespace Services
                 Country = destinyPestanic.country_id
             };
 
-            Airport departure = new Airport()
-            {
-                IATA = departurePestanic.iata,
-                City = departurePestanic.city,
-                State = departurePestanic.state,
-                Country = departurePestanic.country_id
-            };
-
-            if ((destiny == null) && (departure == null) && (plane == null))
+            if ((destiny == null) && (plane == null))
                 return null;
 
             Flight flight = new Flight()
             {
                 Arrival = destiny,
-                Departure = departure,
                 Plane = plane,
                 DtDeparture = flightDTO.DtDeparture,
                 Sales = 0,
@@ -113,9 +104,27 @@ namespace Services
 
         public async Task<Flight> Put(string iata, string rab, string date)
         {
+            date = HttpUtility.UrlEncode(date);
             try
             {
                 HttpResponseMessage response = await client.PutAsJsonAsync(url + "/" + iata + "/" + rab + "/" + date, new {IATA = iata, RAB = rab, Departure = date });
+                response.EnsureSuccessStatusCode();
+                string flightDeserialized = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Flight>(flightDeserialized);
+            }
+            catch (HttpRequestException e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Flight> PutSalesCountAsync(string iata, string rab, string date, int count)
+        {
+            date = HttpUtility.UrlEncode(date);
+            var data = new { count };
+            try
+            {
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "Count/" + iata + "/" + rab + "/" + date, data);
                 response.EnsureSuccessStatusCode();
                 string flightDeserialized = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Flight>(flightDeserialized);

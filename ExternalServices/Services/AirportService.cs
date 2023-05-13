@@ -5,7 +5,7 @@ namespace Services
 {
     public class AirportService
     {
-        private readonly string url = "https://localhost:5001/Airport/";
+        private readonly string url = "https://localhost:44366/Airport/";
         static readonly HttpClient client = new HttpClient();
 
         public async Task<AirportDTO> GetIata(string iata)
