@@ -270,7 +270,7 @@ namespace Services
         {
             try
             {
-                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Delete", cpf);
+                HttpResponseMessage response = await client.PutAsJsonAsync(url + "/Desactivate", cpf);
                 response.EnsureSuccessStatusCode();
                 string passenger = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<Passenger>(passenger);

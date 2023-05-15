@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Web;
 using System.Globalization;
 using static MongoDB.Bson.Serialization.Serializers.SerializerHelper;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace PassengerAPI.Repositories
 {
@@ -47,8 +49,7 @@ namespace PassengerAPI.Repositories
 
             if (allPassengers.Count != 0) return allPassengers;
 
-            return null;
-            //Console.WriteLine("Não existem passageiros cadastrados!");
+            return null;            
         }
 
         public List<Passenger> GetCustomPassenger()
@@ -120,7 +121,6 @@ namespace PassengerAPI.Repositories
             else if (restrictedPassenger != null) return restrictedPassenger;
 
             return null;
-
         }
 
         #endregion
@@ -171,7 +171,6 @@ namespace PassengerAPI.Repositories
         {
             var passenger = _customPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
             var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
-
 
             if (passenger != null)
             {
@@ -319,45 +318,39 @@ namespace PassengerAPI.Repositories
 
         #endregion
         #region[D]
-        public async Task<Passenger> Delete(string _id)
+        public async Task Delete(string _id)
         {
-            var passenger = _customPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
-            var restrictedPassenger = _restrictedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
+            var passenger = _customPassenger.Find(x => x.CPF == _id).FirstOrDefault();
+            var restrictedPassenger = _restrictedPassenger.Find(x => x.CPF == _id)
+                .FirstOrDefault();
 
             if (passenger != null)
             {
                 await _unactivatedPassenger.InsertOneAsync(passenger);
-                await _customPassenger.DeleteOneAsync(p => p.CPF == _id);
-                return passenger;
+                await _customPassenger.DeleteOneAsync(p => p.CPF == _id);                
             }
 
             if (restrictedPassenger != null)
             {
-                await _unactivatedPassenger.InsertOneAsync(passenger);
-                await _restrictedPassenger.DeleteOneAsync(p => p.CPF == _id);
-                return restrictedPassenger;
+                await _unactivatedPassenger.InsertOneAsync(restrictedPassenger);
+                await _restrictedPassenger.DeleteOneAsync(p => p.CPF == _id);                
             }
-            return null;
+            
         }
         #endregion
 
-        public async Task<Passenger> ReativatePassenger(string _id)
+        public async Task<string> ReativatePassenger(string _id)
         {
             var unactivated = _unactivatedPassenger.Find<Passenger>(x => x.CPF == _id).FirstOrDefault();
 
-            if (unactivated != null && unactivated.Status == true)
+            if (unactivated != null)
             {
                 await _customPassenger.InsertOneAsync(unactivated);
                 await _unactivatedPassenger.DeleteOneAsync(p => p.CPF == _id);
-                return unactivated;
-            }
-            if (unactivated != null && unactivated.Status == false)
-            {
-                await _restrictedPassenger.InsertOneAsync(unactivated);
-                await _unactivatedPassenger.DeleteOneAsync(p => p.CPF == _id);
-                return unactivated;
+                return JsonConvert.SerializeObject(unactivated);                
             }
             return null;
+
         }
         private int CalculateAge(DateTime bd)
         {
